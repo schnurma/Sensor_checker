@@ -1,0 +1,62 @@
+    with open(file_name) as f:
+        datafile = f.readlines()
+    found = False  # This isn't really necessary
+    for line in datafile:
+        if search_str in line:
+            # found = True # Not necessary
+            return True
+    return False  # Because you finished the search without finding
+
+if check_file():
+    print('True')
+else:
+    print('False')
+
+search_str = '**Hardware**'
+
+def check_file2():
+    with open(file_name) as f:
+        datafile = f.readlines()
+    found = False  # This isn't really necessary
+    for line in datafile:
+        if search_str in line:
+            # found = True # Not necessary
+            return True
+    return False  # Because you finished the search without finding
+
+if check_file2():
+    print('True')
+else:
+    print('False')
+
+
+    """ 
+class Git_helper:
+
+    def __init__(self):
+        # Download Git Library
+        #url = 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle.git'
+        self.url = 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle/archive/refs/heads/main.zip'
+        self.path_to_dirpath_to_dir = 'resources'
+        self.path_to_file = 'Adafruit_CircuitPython_Bundle.zip'
+        self.file_path = self.path_to_dir + '/' + self.path_to_file
+
+    def download_git_lib(self):
+        # Safe in a ZIP file
+        r = requests.get(self.url, allow_redirects=True)
+        open(self.file_path, 'wb').write(r.content)
+
+        # Unzip the file
+        with zipfile.ZipFile(self.file_path, 'r') as zip_ref:
+            zip_ref.extractall(self.path_to_dir)
+
+Git_helper.download_git_lib(self)
+"""
+
+
+# https://www.adamsmith.haus/python/answers/how-to-list-immediate-subdirectories-in-python
+# https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
+# Creates a list of all subdirectories in the assigned directory
+def get_immediate_subdirectories(a_dir):
+    return [name for name in os.listdir(a_dir)
+            if os.path.isdir(os.path.join(a_dir, name))]      
