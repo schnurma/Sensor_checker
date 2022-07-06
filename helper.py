@@ -7,7 +7,6 @@
 #
 # /////////////////////////////////////////////////////////////////////////////
 
-# Loads Adafruit CircuitPython Librarie Bundle
 
 # Imports
 from asyncio import subprocess
@@ -35,9 +34,8 @@ import re
 
 # /////////////////////////////////////////////////////////////////////////////
 
-
+# downloads and unzips the requested file
 def download_git_lib(url, search_str):
-
     #url = 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle.git'
     #url = 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle/archive/refs/heads/main.zip'
     path_to_dir = 'resources' # fixed path to directory
@@ -51,14 +49,15 @@ def download_git_lib(url, search_str):
 
     # if .zip file unzip
     # Unzip the file
-    if path_to_file.endswith('.zip'):
+    if url.endswith('.zip'):
         with zipfile.ZipFile(file_path, 'r') as zip_ref:
             zip_ref.extractall(path_to_dir)
     else :
-        print("ERORR: File is not a .zip")
+        print("ERROR: File is not a .zip")
 
 
-# https://www.techiedelight.com/list-all-subdirectories-in-directory-python/          
+# https://www.techiedelight.com/list-all-subdirectories-in-directory-python/ 
+# https://realpython.com/working-with-files-in-python/         
 # Creates and returns list of all folders in subdir_path
 def get_subdir_list(subdir_path):
     list_sensors = []
@@ -70,7 +69,7 @@ def get_subdir_list(subdir_path):
     #print(list_sensors)
     return(list_sensors)
 
-#list_sensors = get_subdir_list(subdir_path)
+#list_sensors = get_subdir_list(subdir_path) ???
 
 
 def find_sensors(list_sensors, search_str):
@@ -82,7 +81,7 @@ def find_sensors(list_sensors, search_str):
             #print("Not found, try other search naming")
             return False
 
-#list_sensors = get_subdir_list(subdir_path)
+
 
 # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
 # Installs the Sensors Library with pip
@@ -91,11 +90,11 @@ def pip_install(search_str):
     package = 'adafruit-circuitpython-' + search_str
     #subprocess.check_call([sys.executable, "-m", "pip", "install", package])
     print("Installing:", package)
-    print("THIS IS A TEST LINE, REMOVE LATER")
+    print("THIS IS A TEST LINE, REMOVE LATER and uncomment subprocess...")
 
 # prints the sensor implementation notes
 def check_file(search_str):
-    START_PATTERN = 'Hardware'
+    START_PATTERN = '==='
     END_PATTERN = 'Software'
 
     with open(search_str) as file:
@@ -105,7 +104,7 @@ def check_file(search_str):
         for line in file:
             if re.search(START_PATTERN, line):
                 match = True
-                newfile = open('my_new_file.txt', 'w')
+                newfile = open('sensor_info.txt', 'w')
                 continue
             elif re.search(END_PATTERN, line):
                 match = False
@@ -116,19 +115,28 @@ def check_file(search_str):
                 newfile.write('\n')
                 print(line)
 
-def show_sensor_info(dist_packages, search_str):
+#    
+#search_str = "hts221"
+#dist_packages = '/usr/local/lib/python3.8/dist-packages'
+# 
+def show_sensor_info(search_str, dist_packages):
     # /usr/local/lib/python3.?/dist-packages
     # search in dist-package after sensor lib load Implemantion Notes
-    if search_str in dist_packages:
-        check_file(search_str)
-
+    #print(dist_packages)
+    #print(search_str)
+    file_name = search_str + '.py'
+    #print(path)
+    for f_name in os.listdir(dist_packages):
+        if f_name.endswith(file_name):
+            #print(f_name)
+            check_file(f_name)
+            break
     else:
-        print("ERORR: Sensor not found")
+        print("ERROR: Sensor Library not found in dist-packages")
+        return False
         
+#show_sensor_info(search_str, dist_packages)
 
 #def load_example_code(search_str):
     # open example code into editor so user can check pins and test sensor
  #   pass
-
-
-#find_sensors(list_sensors, search_str)

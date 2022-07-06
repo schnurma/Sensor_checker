@@ -13,29 +13,35 @@ import helper
 
 
 # Keywords
-file_name = 'adafruit_sgp30.py'
-search_str = 'I2C'
+# !!! TEMP !!!
+#file_name = 'adafruit_sgp30.py'
+#search_str = 'I2C'
+#search_str = "hts221"
 
-
+# FIXED
 subdir_path = '/home/workshopper/Documents/GitHub/Sensor_checker/resources/Adafruit_CircuitPython_Bundle-main/libraries/drivers/'
-search_str = "hts221"
-dist_packages = '/usr/local/lib/python3.?/dist-packages'
 
-# User should input Sensor ID to search in Adafruit Library
-# Searching in Lib for Sensor ID downloads the file
-# Prints out Implementation Notes and Connection Type (I2C, SPi, etc...)
+dist_packages = '/usr/local/lib/python3.8/dist-packages'
+
+# User should input Sensor ID to search in Adafruit Sensor Library
+# Searching in Lib for Sensor ID, downloads the file
+# Prints out Implementation Notes and Connection Type (I2C, SPI, etc...)
 # Develops Core for ROS2 and Dockercontainer with Comments what is needed to implement?
-# 
+
+# ERROR HANDLING !!!???!!!
 
 
-def user_input():
+
+def user_input() -> None:
+    # Input Sensor ID for search
     print('Enter your search string:')
     search_str = input()
    
     return search_str
 
 
-def check_file():
+def check_file() -> None:
+    # Exports Search String to File
     START_PATTERN = 'Hardware'
     END_PATTERN = 'Software'
 
@@ -76,23 +82,25 @@ while True:
     if helper.find_sensors(list_sensors, search_str):
         break
     else:
-        print("Not found, try other search naming")
-        continue
+        print("Not found, try other naming or other sensor")
+        continue 
 
 # Installing with pip Sensor Lib to IOT2050 Python directory:
 # /usr/local/lib/python3.?/dist-packages
+# how to address the right python folder?
 helper.pip_install(search_str)
 # !! this need Exceptions to handle if the Sensor is not found !!!
 
 # Show the Sensor Library Implementation Notes:
 helper.show_sensor_info(search_str, dist_packages)
 # And load Example Code for testing the sensors native with the IOT2050!
-url = 'https://github.com/adafruit/Adafruit_CircuitPython_' + '/' + search_str + '/archive/refs/heads/main.zip'
+url = 'https://github.com/adafruit/Adafruit_CircuitPython_' + search_str + '/archive/refs/heads/main.zip'
 helper.download_git_lib(url, search_str)
 
+# Open Example Code in Textprogram for user to edit Pins and other settings:
+# (Choose Connectivity Type)
 
-
-
-
-
-# Check File for Sensor ID
+# Edited Code is saved to a new file for Export to Docker Container
+# Create Dockerfile for the Sensor
+# Create Docker Container for the Sensor
+# Run the Sensor in the Container
