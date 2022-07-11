@@ -15,13 +15,16 @@ code_dump.txt und classes_objects.py
 Meine Idee:
 
 - Liste von der Adafruit GitHub Library erstellen,
-- als Liste dem User zur Verfügung stellen, erstmal im Terminal.
-- Nach Auswahl und verifizierung, laden der vollständigen Lib des Sensors (im LibPackage Bundle sind nur *.mpy Files... )
+- als Liste dem User zur Verfügung stellen, im Terminal.
+- Nach Auswahl und Verifizierung, laden der vollständigen Lib des Sensors (im LibPackage Bundle sind nur *.mpy Files... )
 - Ausgabe der Implemenation Notes mit Link zu Adafruit Sensor Seite
 - Example Code in Nano öffnen
-- User muss Pin Belegung Protokoll entsprechend Sensor anpassen testen
-- Wenn auf IOT2050 funktioniert, Dockerfile wird mit angepassten Example Code erstellt.
-- erstellt Docker Image
+-> User muss Pin Belegung Protokoll entsprechend Sensor anpassen testen
+-> kann Example Code starten
+- Wenn auf IOT2050 funktioniert, Dockerfile wird mit angepassten Example Code erstellt
+- Docker Image Namen festlegen lassen, vorauswahl definieren.
+- erstellt Docker Image Strukturen (in Vorbereitung für ROS2)
+- erstellt Dockerfile
 - startet Docker Image
 - Öffnet Docker Container
 

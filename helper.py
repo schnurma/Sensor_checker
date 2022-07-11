@@ -35,10 +35,10 @@ import re
 # /////////////////////////////////////////////////////////////////////////////
 
 # downloads and unzips the requested file
-def download_git_lib(url, search_str):
+def download_git_lib(url, search_str, path_to_dir):
     #url = 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle.git'
     #url = 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle/archive/refs/heads/main.zip'
-    path_to_dir = 'resources' # fixed path to directory
+    #path_to_dir = 'resources' # fixed path to directory
     #path_to_file = 'Adafruit_CircuitPython_Bundle.zip'
     path_to_file = search_str
     file_path = path_to_dir + '/' + path_to_file
@@ -69,7 +69,28 @@ def get_subdir_list(subdir_path):
     #print(list_sensors)
     return(list_sensors)
 
+def get_subdir_list2(subdir_path):
+    list_sensors = []
+    for path in os.scandir(subdir_path):
+        if path.is_dir():
+            #print(path)
+            list_sensors.append(path.name)
+
+    #print(list_sensors)
+    return(list_sensors)
+
 #list_sensors = get_subdir_list(subdir_path) ???
+# Creates and returns list of all files in subdir_path
+def get_subfile_list(subdir_path):
+    list_sensors = []
+    for path in Path(subdir_path).iterdir():
+        if path.is_file():
+            print(path.name)
+            list_sensors.append(path.name)
+
+    #print(list_sensors)
+    return(list_sensors)
+
 
 
 def find_sensors(list_sensors, search_str):
@@ -104,7 +125,7 @@ def check_file(search_str):
         for line in file:
             if re.search(START_PATTERN, line):
                 match = True
-                newfile = open('sensor_info.txt', 'w')
+                newfile = open('resources/sensor_info.txt', 'w')
                 continue
             elif re.search(END_PATTERN, line):
                 match = False
@@ -134,9 +155,50 @@ def show_sensor_info(search_str, dist_packages):
     else:
         print("ERROR: Sensor Library not found in dist-packages")
         return False
-        
-#show_sensor_info(search_str, dist_packages)
 
-#def load_example_code(search_str):
-    # open example code into editor so user can check pins and test sensor
- #   pass
+# open example code into editor so user can check pins and test sensor      
+def load_example_code(search_str):
+    # /resources/*Sensor/examples/
+    #Adafruit_CircuitPython_SGP30-main
+    # search in dist-package after sensor lib load Implemantion Notes
+    
+    file_name = ".py"
+    #dist_packages = "/resources/Adafruit_CircuitPython_" + search_str + "-main" + "/examples/"
+    dist_packages  = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
+    #print(path)
+    for f_name in os.listdir(dist_packages):
+        if f_name.endswith(file_name):
+            print("Found this file", f_name)
+            file_path = dist_packages + f_name
+            print(file_path)
+            open_nano(file_path)
+            break
+    else:
+        print("ERROR: Example Code not found")
+        return False
+
+# opens nano for showing the example code
+def open_nano(file_path):
+    print("Opening nano editor for:", file_path)
+    #subprocess.call(['nano', 'resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py'])
+    subprocess.call(['nano', file_path])
+
+# runs example code with python3
+def run_code(file_path):
+    print("Running code:", file_path)
+    subprocess.call(['python3', file_path])
+
+
+
+
+search_str = "sgp30"
+subdir_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
+file_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py"
+#list_sensor = get_subfile_list(subdir_path)
+#print(list_sensor)
+
+#load_example_code(search_str)
+run_code(file_path)
+
+print("Done")
+
