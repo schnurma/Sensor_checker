@@ -19,6 +19,7 @@ import requests
 import zipfile
 import os
 import pathlib
+import shutil
 import subprocess
 import sys
 import re
@@ -69,6 +70,7 @@ def get_subdir_list(subdir_path):
     #print(list_sensors)
     return(list_sensors)
 
+
 def get_subdir_list2(subdir_path):
     list_sensors = []
     for path in os.scandir(subdir_path):
@@ -78,6 +80,7 @@ def get_subdir_list2(subdir_path):
 
     #print(list_sensors)
     return(list_sensors)
+
 
 #list_sensors = get_subdir_list(subdir_path) ???
 # Creates and returns list of all files in subdir_path
@@ -92,7 +95,6 @@ def get_subfile_list(subdir_path):
     return(list_sensors)
 
 
-
 def find_sensors(list_sensors, search_str):
         if search_str in list_sensors:
             #print("Desired item is in list:", search_str)
@@ -103,7 +105,6 @@ def find_sensors(list_sensors, search_str):
             return False
 
 
-
 # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
 # Installs the Sensors Library with pip
 # i. E. pip3 install adafruit-circuitpython-lis3dh
@@ -112,6 +113,7 @@ def pip_install(search_str):
     #subprocess.check_call([sys.executable, "-m", "pip", "install", package])
     print("Installing:", package)
     print("THIS IS A TEST LINE, REMOVE LATER and uncomment subprocess...")
+
 
 # prints the sensor implementation notes
 def check_file(search_str):
@@ -136,7 +138,7 @@ def check_file(search_str):
                 newfile.write('\n')
                 print(line)
 
-#    
+
 #search_str = "hts221"
 #dist_packages = '/usr/local/lib/python3.8/dist-packages'
 # 
@@ -156,32 +158,36 @@ def show_sensor_info(search_str, dist_packages):
         print("ERROR: Sensor Library not found in dist-packages")
         return False
 
-# open example code into editor so user can check pins and test sensor      
-def load_example_code(search_str):
+
+# find example code for sensor  
+def find_example_code(search_str, search_dir):
     # /resources/*Sensor/examples/
-    #Adafruit_CircuitPython_SGP30-main
+    # Adafruit_CircuitPython_SGP30-main
     # search in dist-package after sensor lib load Implemantion Notes
     
     file_name = ".py"
+    dist_packages = search_dir
     #dist_packages = "/resources/Adafruit_CircuitPython_" + search_str + "-main" + "/examples/"
-    dist_packages  = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
-    #print(path)
+    #dist_packages  = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
+    # carefull "in" is case sensitive  !
     for f_name in os.listdir(dist_packages):
         if f_name.endswith(file_name):
             print("Found this file", f_name)
             file_path = dist_packages + f_name
             print(file_path)
-            open_nano(file_path)
-            break
+            return(file_path)
+            #open_nano(file_path)
     else:
         print("ERROR: Example Code not found")
         return False
 
-# opens nano for showing the example code
+
+# open example code in nano editor
 def open_nano(file_path):
     print("Opening nano editor for:", file_path)
     #subprocess.call(['nano', 'resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py'])
     subprocess.call(['nano', file_path])
+
 
 # runs example code with python3
 def run_code(file_path):
@@ -189,16 +195,98 @@ def run_code(file_path):
     subprocess.call(['python3', file_path])
 
 
+# creates needed directories for Docker Image / ROS2 Node
+# also possible to create a bash.sh for less code in this file...
+def create_dirs(node_name):
+    dir_name = node_name
+    node_include = "include/" + node_name
+    node_name_init = node_name + "/" + "__init__.py"
+    subdir_list = [node_name_init, node_include, "resource", "src"]
+
+    for line in subdir_list:
+        try:
+            dir_name_sub = dir_name + "/" + line
+            os.umask(0)
+            #pathlib.Path(dir_name_sub).mkdir(mode=0o777, parents=True, exist_ok=True)
+            print("Creating directory:", dir_name_sub)
+            os.makedirs(dir_name_sub, mode=0o777, exist_ok=True)
+        except FileExistsError:
+            print("Directory " , dir_name_sub ,  " already exists")
 
 
-search_str = "sgp30"
-subdir_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
-file_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py"
+# moves all needed files to the new directory
+# Permissions problems....!!!
+def copy_files(node_name):
+    dir_name = node_name
+    source_list = ["installer/README.md", "installer/Dockerfile"]
+    target_list = [dir_name +"/README.md", dir_name +"/Dockerfile"]
+    i = 0
+    for line in source_list:
+        try:
+            shutil.copyfile(line, target_list[i])
+            #Path(line).rename(target_list[i])
+            print("Copying:", line, "to:", target_list[i])
+            i += 1
+        except:
+            print("ERROR: File not found or already exists")
+
+
+# copy files from resources to node_name
+# blinka = files for the blinka platform till offical release
+# platformdetect = files for the platformdetect platform till offical release
+# usr = files for mraa !
+def copy_dirs(node_name):
+    dir_name = node_name
+    source_list = ["installer/blinka", "installer/platformdetect", "installer/usr"]
+    target_list = [dir_name +"/blinka", dir_name +"/platformdetect", dir_name+ "/usr"]
+    
+    i = 0
+    for line in source_list:
+        try:
+            os.umask(0)
+            shutil.copytree(line, target_list[i])
+            print("Copying:", line, "to:", target_list[i])
+            i += 1
+        except:
+            print("ERROR: File not found or already exists")
+
+
+# finds Placeholder in the file and replaces it with the node_name
+def replace_string(file_path, search_str, replace_str):
+    with open(file_path) as f:
+        s = f.read()
+        s = s.replace(search_str, replace_str)
+        with open(file_path, "w") as f:
+            f.write(s)
+
+"""           
+f1 = open('file1.txt', 'r')
+f2 = open('file2.txt', 'w')
+for line in f1:
+    f2.write(line.replace('old_text', 'new_text'))
+f1.close()
+f2.close()
+"""
+
+search_str = "hts221"
+path_to_dir = 'resources' # fixed path to directory
+#subdir_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
+#file_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py"
 #list_sensor = get_subfile_list(subdir_path)
 #print(list_sensor)
+#search_dir = path_to_dir + "/Adafruit_CircuitPython_" + search_str.upper() + "-main/examples/"
+#search_dir = "resources/Adafruit_CircuitPython_HTS221-main/examples/"
+#print(search_dir)
+#find_example_code(search_str, search_dir)
+#node_name = "py_test_XXX"
+#create_dirs(node_name)
+#mov_files(node_name)
+#copy_files2(node_name)
+#run_code(file_path)
 
-#load_example_code(search_str)
-run_code(file_path)
-
-print("Done")
+node_name = "py_hts221"
+placeholder = "SENSOR_PLACEHOLDER"
+file_path = node_name + "/Dockerfile"
+replace_string(file_path, placeholder, search_str)
+print(" Helper Done")
 

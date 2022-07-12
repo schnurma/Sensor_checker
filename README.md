@@ -28,3 +28,13 @@ Meine Idee:
 - startet Docker Image
 - Öffnet Docker Container
 
+
+INFOS für README?
+
+- Sensorname
+- Datum
+- Infos aus Lib?
+- Funktionsweise
+- Befehle Docker
+- Befehle ROS2
+

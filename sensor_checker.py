@@ -23,7 +23,7 @@ import helper
 # FIXED
 subdir_path = '/home/workshopper/Documents/GitHub/Sensor_checker/resources/Adafruit_CircuitPython_Bundle-main/libraries/drivers/'
 
-dist_packages = '/usr/local/lib/python3.8/dist-packages'
+dist_packages = '/usr/local/lib/python3.8/dist-packages' # needs a wildcard for Python Version!
 path_to_dir = 'resources' # fixed path to directory
 
 # User should input Sensor ID to search in Adafruit Sensor Library
@@ -32,7 +32,6 @@ path_to_dir = 'resources' # fixed path to directory
 # Develops Core for ROS2 and Dockercontainer with Comments what is needed to implement?
 
 # ERROR HANDLING !!!???!!!
-
 
 
 def user_input() -> None:
@@ -83,8 +82,8 @@ print(list_sensors)
 while True:
     #search_str = user_input()
     print("Enter your search string:")
-    #search_str = input()
-    search_str = "sgp30"
+    search_str = input()
+    #search_str = "sgp30"
     if helper.find_sensors(list_sensors, search_str):
         break
     else:
@@ -107,32 +106,42 @@ helper.download_git_lib(url, search_str, path_to_dir)
 # Open Example Code in Textprogram for user to edit Pins and other settings:
 #helper.load_example_code(search_str):
 while True:
+    print("////////////////////////////////////////////////////")
     print("Do you want to open the example code? Press '1'")
     print("Do you want to run the example code? Press '2' ")
     print("Do you want to continue? Press '5'")
     print("Do you want to exit? Press '6'")
     answer = input()
 
+    # extra function for path generation ??? Not a good place to set this variable...
+    search_dir = path_to_dir + "/Adafruit_CircuitPython_" + search_str.upper() + "-main/examples/"
+    # file_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py"
+    # file_path = "resources/Adafruit_CircuitPython_HTS221-main/examples/hts221_simpletest.py"
+
     # switch case better but only supported in Python 3.10
     if answer == '1':
-        if helper.load_example_code(search_str):
-            # create list if files in directory
-            # TODO: user can choose file to open
-            continue
-    elif answer == '2':
-        answer = input()
-        if answer == '2':
-            # create list if files in directory
-            # TODO: user can choose which file to run
-            file_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py"
-            if helper.run_code(file_path):
-                continue
+        # create path to file if exists
+        # TODO: user can choose file to open
+        file_path = (helper.find_example_code(search_str, search_dir))
+
+        # open file in texteditor
+        helper.open_nano(file_path)
+        continue
+
+    elif answer == '2':        
+        # create list if files in directory
+        # TODO: user can choose which file to run       
+        helper.run_code(file_path)
+        continue
+
     elif answer == '5':
         # continues to next step
         break
+
     elif answer == '6':
         # exit program
         sys.exit("User aborted the Program")
+
     else:
         # loop till user enters valid input
         print("\n \n \n")
@@ -146,18 +155,60 @@ while True:
 # or check the type of sensors type with mraa?
 
 while True:
-    print("Do you want to create the Docker Image? (y/n)")
+    node_name = "py_" + search_str
+    print(f"\nDocker Image (ROS2 Node) Name will be: {node_name} ")
+    print("Do you want to create the Docker Image with this name? (y/n)")
+    print("Press '6' to exit")
     answer = input()
     if answer == 'y':
-        #if helper.export_code(search_str):
-        print("Docker Image created")
+        # proceed to next step
         break
-    else:
-        print("Not creating Docker Image")
+
+    elif answer == 'n':
+        # Changes the name of the node
+        print("How do you want to name this Node? (e.g. py_sgp30):")
+        node_name = input()
+        continue
+
+    elif answer == '6':
+        # Exit program
         sys.exit("User aborted the Program")
-        break
+
+    else:
+        # Loop till user enters valid input
+        print("\n \n \n")
+        print("Wrong input, try again")
+        continue
 
 
+# Creates Docker / ROS2 Directory Structure:
+helper.create_dirs(node_name)
+helper.copy_dirs(node_name)
+helper.copy_files(node_name)
+
+# updates the Dockerfile and README.md with the correct name:
+# README.md File for Docker Image:
+placeholder = "SENSOR_PLACEHOLDER"
+file_path = node_name + "/README.md"
+helper.replace_string(file_path, placeholder, search_str)
+
+placeholder = "NODE_PLACEHOLDER"
+file_path = node_name + "/Dockerfile"
+helper.replace_string(file_path, placeholder, node_name)
+
+placeholder = "SENSOR_PLACEHOLDER"
+file_path = node_name + "/Dockerfile"
+helper.replace_string(file_path, placeholder, search_str)
+
+# Dockerfile for Docker Image:
+# ???
+
+
+
+
+
+
+# #############################################################################
 print("Done Done Done")
 print("/////////////////////////////////////////////////////////////////////////////")
 
