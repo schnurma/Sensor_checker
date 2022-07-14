@@ -8,10 +8,10 @@ USER root
 
 # Variable for the sensor name
 # ${variable_name}
-# ENV SENSOR_NODE = NODE_PLACE_HOLDER
-ENV SENSOR_NODE = NODE_PLACEHOLDER
-# ENV SENSOR_VAR = SENSOR_PLACE_HOLDER
-ENV SENSOR_VAR = SENSOR_PLACEHOLDER
+# ENV SENSOR_NODE = NODE_PLACE_HOLDER, {Value} will be replaced 
+# ${SENSOR_NODE} = NODE_PLACEHOLDER
+# ENV SENSOR_VAR = SENSOR_PLACE_HOLDER, {Value} will be replaced 
+# ${SENSOR_VAR} = SENSOR_PLACEHOLDER
 
 
 # install packages
@@ -98,9 +98,7 @@ COPY ${SENSOR_NODE} /root/colcon_ws/src/${SENSOR_NODE}/${SENSOR_NODE}
 
 # Make Python Files exectuable
 RUN cd /root/colcon_ws/ \
-    && echo chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/publisher_member_function.py \
-    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/subscriber_member_function.py \
-    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/${SENSOR_NODE}.py
+    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/${SENSOR_VAR}.py
 
 # Blinka walkaround
 # Libs are located /usr/local/lib/python3.?/dist-packages

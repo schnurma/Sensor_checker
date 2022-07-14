@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(${SENSOR_NODE})
+project(py_sgp30)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -40,7 +40,7 @@ ament_python_install_package(${PROJECT_NAME})
  
 # Install Python executables
 install(PROGRAMS
-  src/${SENSOR_VAR}.py
+  src/sgp30.py
   #src/subscriber_member_function.py
   #src/publisher_member_function.py
   DESTINATION lib/${PROJECT_NAME}

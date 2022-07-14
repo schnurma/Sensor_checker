@@ -23,6 +23,8 @@ Meine Idee:
 -> kann Example Code starten
 - Wenn auf IOT2050 funktioniert, Dockerfile wird mit angepassten Example Code erstellt
 - Docker Image Namen festlegen lassen, vorauswahl definieren.
+- zwei Varianten ohne und mit ROS2 Funktion für besseres testen und einbinden
+
 - erstellt Docker Image Strukturen (in Vorbereitung für ROS2)
 - erstellt Dockerfile
 - startet Docker Image
@@ -37,4 +39,7 @@ INFOS für README?
 - Funktionsweise
 - Befehle Docker
 - Befehle ROS2
+
+INFOS für package.xml?
+
 

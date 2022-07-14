@@ -8,10 +8,10 @@ USER root
 
 # Variable for the sensor name
 # ${variable_name}
-# ENV SENSOR_NODE = NODE_PLACE_HOLDER
-ENV SENSOR_NODE = py_hts221
-# ENV SENSOR_VAR = SENSOR_PLACE_HOLDER
-ENV SENSOR_VAR = hts221
+# ENV SENSOR_NODE = NODE_PLACE_HOLDER, {Value} will be replaced 
+# py_sgp30 = NODE_PLACEHOLDER
+# ENV SENSOR_VAR = SENSOR_PLACE_HOLDER, {Value} will be replaced 
+# sgp30 = SENSOR_PLACEHOLDER
 
 
 # install packages
@@ -22,7 +22,7 @@ RUN apt-get update \
 	software-properties-common \
     nano \
     tmux \
-    && mkdir -p /root/colcon_ws/src/${SENSOR_NODE}/src
+    && mkdir -p /root/colcon_ws/src/py_sgp30/src
     # -p no error if existing, make parent directories as needed
 
 # copy binaries (mraa)
@@ -82,25 +82,23 @@ RUN pip3 install --upgrade pip
 # Circuit Python Tool:
 RUN pip3 install Adafruit-Blinka
 # Sensor Library: 
-RUN sudo pip3 install adafruit-circuitpython-${SENSOR_VAR}
+RUN sudo pip3 install adafruit-circuitpython-sgp30
 
 
 # ROS2 Dependencies
 # for only Python should be used setup.py & .cfg but there are some issues with the --symlink-install option
-COPY CMakeLists.txt /root/colcon_ws/src/${SENSOR_NODE}/.
-COPY package.xml /root/colcon_ws/src/${SENSOR_NODE}/.
-COPY README.md /root/colcon_ws/src/${SENSOR_NODE}/.
-COPY src /root/colcon_ws/src/${SENSOR_NODE}/src/.
+COPY CMakeLists.txt /root/colcon_ws/src/py_sgp30/.
+COPY package.xml /root/colcon_ws/src/py_sgp30/.
+COPY README.md /root/colcon_ws/src/py_sgp30/.
+COPY src /root/colcon_ws/src/py_sgp30/src/.
 # Python Lib Folder (mandatory with init.py)
-COPY ${SENSOR_NODE} /root/colcon_ws/src/${SENSOR_NODE}/${SENSOR_NODE}
+COPY py_sgp30 /root/colcon_ws/src/py_sgp30/py_sgp30
 # CPP Lib Folder not needed!
-#COPY include /root/colcon_ws/src/${SENSOR_NODE}/include
+#COPY include /root/colcon_ws/src/py_sgp30/include
 
 # Make Python Files exectuable
 RUN cd /root/colcon_ws/ \
-    && echo chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/publisher_member_function.py \
-    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/subscriber_member_function.py \
-    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/${SENSOR_NODE}.py
+    && chmod +x /root/colcon_ws/src/py_sgp30/src/sgp30.py
 
 # Blinka walkaround
 # Libs are located /usr/local/lib/python3.?/dist-packages

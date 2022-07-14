@@ -1,10 +1,10 @@
 
 
-Helper library for the HTS221 Humidity and Temperature Sensor
+I2C driver for SGP30 Sensirion VoC sensor
 
 
 
-* Author(s): Bryan Siepert
+* Author(s): ladyada
 
 
 
@@ -18,9 +18,9 @@ Implementation Notes
 
 
 
-* `Adafruit HTS221 - Temperature & Humidity
+* Adafruit `SGP30 Air Quality Sensor Breakout - VOC and eCO2
 
-  Sensor Breakout Board <https://www.adafruit.com/products/4535>`_
+  <https://www.adafruit.com/product/3709>`_ (Product ID: 3709)
 
 
 

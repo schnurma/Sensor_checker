@@ -23,6 +23,7 @@ import shutil
 import subprocess
 import sys
 import re
+import subprocess
 
 
 # TEST VARIABLES AND STUFFF
@@ -143,33 +144,30 @@ def check_file(search_str):
 #dist_packages = '/usr/local/lib/python3.8/dist-packages'
 # 
 def show_sensor_info(search_str, dist_packages):
-    # /usr/local/lib/python3.?/dist-packages
-    # search in dist-package after sensor lib load Implemantion Notes
-    #print(dist_packages)
-    #print(search_str)
+    #search and open the Library file
+    
     file_name = search_str + '.py'
     #print(path)
     for f_name in os.listdir(dist_packages):
         if f_name.endswith(file_name):
-            #print(f_name)
             check_file(f_name)
             break
     else:
-        print("ERROR: Sensor Library not found in dist-packages")
+        print("ERROR: Sensor Library not found")
         return False
 
 
 # find example code for sensor  
-def find_example_code(search_str, search_dir):
+def find_example_code(search_str, dist_packages):
     # /resources/*Sensor/examples/
     # Adafruit_CircuitPython_SGP30-main
     # search in dist-package after sensor lib load Implemantion Notes
     
     file_name = ".py"
-    dist_packages = search_dir
     #dist_packages = "/resources/Adafruit_CircuitPython_" + search_str + "-main" + "/examples/"
     #dist_packages  = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
     # carefull "in" is case sensitive  !
+    # file_path = 
     for f_name in os.listdir(dist_packages):
         if f_name.endswith(file_name):
             print("Found this file", f_name)
@@ -195,6 +193,13 @@ def run_code(file_path):
     subprocess.call(['python3', file_path])
 
 
+from distutils.dir_util import copy_tree
+# creates new directory for sensor node
+def create_new_dir(search_str, node_name):
+    source_dir = "installer/"
+    copy_tree(source_dir, node_name)
+
+
 # creates needed directories for Docker Image / ROS2 Node
 # also possible to create a bash.sh for less code in this file...
 def create_dirs(node_name):
@@ -213,13 +218,26 @@ def create_dirs(node_name):
         except FileExistsError:
             print("Directory " , dir_name_sub ,  " already exists")
 
+# copys .py into node_name/src
+def  copy_src(search_str, node_name, file_path):
+    dir_name = node_name
+    source_list = file_path
+    target_list = dir_name +"/src/" + search_str + ".py"
+    i = 0
+    try:
+        shutil.copyfile(source_list, target_list)
+        #Path(line).rename(target_list[i])
+        print("Copying:", source_list, "to:", target_list)
+    except:
+        print("ERROR: File not found or already exists")
+
 
 # moves all needed files to the new directory
 # Permissions problems....!!!
 def copy_files(node_name):
     dir_name = node_name
-    source_list = ["installer/README.md", "installer/Dockerfile"]
-    target_list = [dir_name +"/README.md", dir_name +"/Dockerfile"]
+    source_list = ["installer/README.md", "installer/Dockerfile", "installer/CMakeList.txt", "installer/package.xml"]
+    target_list = [dir_name + "/README.md", dir_name + "/Dockerfile", dir_name + "/CMakeList.txt", dir_name + "/package.xml"]
     i = 0
     for line in source_list:
         try:
@@ -259,17 +277,18 @@ def replace_string(file_path, search_str, replace_str):
         with open(file_path, "w") as f:
             f.write(s)
 
-"""           
-f1 = open('file1.txt', 'r')
-f2 = open('file2.txt', 'w')
-for line in f1:
-    f2.write(line.replace('old_text', 'new_text'))
-f1.close()
-f2.close()
-"""
 
-search_str = "hts221"
-path_to_dir = 'resources' # fixed path to directory
+def run_docker_image(node_name):
+    docker_command = "docker build . -t " + node_name
+    with open("/tmp/output.log", "a") as output:
+        subprocess.call(docker_command, shell=True, stdout=output, stderr=output)
+
+
+
+
+
+#search_str = "hts221"
+#path_to_dir = 'resources' # fixed path to directory
 #subdir_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
 #file_path = "resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py"
 #list_sensor = get_subfile_list(subdir_path)
@@ -279,14 +298,15 @@ path_to_dir = 'resources' # fixed path to directory
 #print(search_dir)
 #find_example_code(search_str, search_dir)
 #node_name = "py_test_XXX"
+##create_new_dir(search_str, node_name)
 #create_dirs(node_name)
 #mov_files(node_name)
 #copy_files2(node_name)
 #run_code(file_path)
 
-node_name = "py_hts221"
-placeholder = "SENSOR_PLACEHOLDER"
-file_path = node_name + "/Dockerfile"
-replace_string(file_path, placeholder, search_str)
-print(" Helper Done")
+#node_name = "py_hts221"
+#placeholder = "SENSOR_PLACEHOLDER"
+#file_path = node_name + "/Dockerfile"
+#replace_string(file_path, placeholder, search_str)
+#print(" Helper Done")
 
