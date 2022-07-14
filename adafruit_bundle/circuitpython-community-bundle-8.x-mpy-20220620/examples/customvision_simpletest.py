@@ -25,7 +25,9 @@ spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 
 """Use below for Most Boards"""
-status_light = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.2)  # Uncomment for Most Boards
+status_light = neopixel.NeoPixel(
+    board.NEOPIXEL, 1, brightness=0.2
+)  # Uncomment for Most Boards
 """Uncomment below for ItsyBitsy M4"""
 # status_light = dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.2)
 # Uncomment below for an externally defined RGB LED
@@ -76,7 +78,15 @@ client = CustomVisionPredictionClient(secrets["api_key"], secrets["endpoint"])
 
 # Do an image classification
 # Update the URL to point to your image URL
-image_prediction = client.classify_image_url(secrets["project_id"], secrets["published_name"], "<url of image>")
+image_prediction = client.classify_image_url(
+    secrets["project_id"], secrets["published_name"], "<url of image>"
+)
 
 for prediction in image_prediction.predictions:
-    print("Prediction", prediction.tag_name, "with probability", str(int(prediction.probability * 100)), "%")
+    print(
+        "Prediction",
+        prediction.tag_name,
+        "with probability",
+        str(int(prediction.probability * 100)),
+        "%",
+    )

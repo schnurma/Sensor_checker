@@ -4,6 +4,7 @@
 # License: Public Domain
 
 import time
+
 # Import all board pins.
 import board
 import digitalio
@@ -23,8 +24,9 @@ spi_bus = busio.SPI(board.SCK, board.MOSI)
 # Create the SSD1306 OLED class.
 # The first two parameters are the pixel width and pixel height.  Change these
 # to the right size for your display!
-display = adafruit_sh1106.SH1106_SPI(128, 64, spi_bus, dc, reset, cs, external_vcc=True,
-                                    baudrate=24000000)
+display = adafruit_sh1106.SH1106_SPI(
+    128, 64, spi_bus, dc, reset, cs, external_vcc=True, baudrate=24000000
+)
 
 # Clear the display.  Always call show after changing pixels to make the display
 # update visible!

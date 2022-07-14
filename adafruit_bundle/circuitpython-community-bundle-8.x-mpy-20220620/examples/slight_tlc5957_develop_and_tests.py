@@ -14,6 +14,7 @@ its mainly the playground during the development of the library.
 import time
 
 import board
+
 # import busio
 import bitbangio
 import digitalio
@@ -22,16 +23,10 @@ import pulseio
 import slight_tlc5957
 
 ##########################################
-print(
-    "\n" +
-    (42 * '*') + "\n" +
-    __doc__ + "\n" +
-    (42 * '*') + "\n" +
-    "\n"
-)
+print("\n" + (42 * "*") + "\n" + __doc__ + "\n" + (42 * "*") + "\n" + "\n")
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("initialise digitalio pins for SPI")
 spi_clock = digitalio.DigitalInOut(board.SCK)
 spi_clock.direction = digitalio.Direction.OUTPUT
@@ -47,17 +42,16 @@ spi = bitbangio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # maximum frequency is currently hardcoded to 6MHz
 # https://github.com/adafruit/circuitpython/blob/master/ports/atmel-samd/common-hal/pulseio/PWMOut.c#L119
-gsclk_freqency = (6000 * 1000)  # 6MHz
+gsclk_freqency = 6000 * 1000  # 6MHz
 # gsclk_freqency = (2 * 1000)  # 2kHz
-gsclk = pulseio.PWMOut(
-    board.D9, duty_cycle=(2 ** 15), frequency=gsclk_freqency)
-print("gsclk.frequency: {:}MHz".format(gsclk.frequency / (1000*1000)))
+gsclk = pulseio.PWMOut(board.D9, duty_cycle=(2**15), frequency=gsclk_freqency)
+print("gsclk.frequency: {:}MHz".format(gsclk.frequency / (1000 * 1000)))
 
 latch = digitalio.DigitalInOut(board.D7)
 latch.direction = digitalio.Direction.OUTPUT
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("define pixel array / init TLC5957")
 num_leds = 16
 pixels = slight_tlc5957.TLC5957(
@@ -67,7 +61,8 @@ pixels = slight_tlc5957.TLC5957(
     spi_clock=spi_clock,
     spi_mosi=spi_mosi,
     spi_miso=spi_miso,
-    pixel_count=num_leds)
+    pixel_count=num_leds,
+)
 
 print("pixel_count", pixels.pixel_count)
 print("chip_count", pixels.chip_count)
@@ -113,11 +108,7 @@ def time_meassurement():
         "'pixels.show()'"
         "duration: {}s for {} loops.\n"
         "\t{:.2f}ms per loop"
-        "".format(
-            duration,
-            loop_count,
-            (duration/loop_count)*1000
-        )
+        "".format(duration, loop_count, (duration / loop_count) * 1000)
     )
 
     duration = 0
@@ -130,11 +121,7 @@ def time_meassurement():
         "'pixels.show()'"
         "duration: {}s for {} loops.\n"
         "\t{:.2f}ms per loop"
-        "".format(
-            duration,
-            loop_count,
-            (duration/loop_count)*1000
-        )
+        "".format(duration, loop_count, (duration / loop_count) * 1000)
     )
 
 
@@ -156,11 +143,7 @@ def main_loop():
             print(
                 "duration: {}s for {} loops.\n"
                 "\t{:.2f}ms per loop"
-                "".format(
-                    duration,
-                    loop_count,
-                    (duration/loop_count)*1000
-                )
+                "".format(duration, loop_count, (duration / loop_count) * 1000)
             )
             # reset
             color = (0, 0, 0)
@@ -175,18 +158,18 @@ def main_loop():
 
 
 ##########################################
-if __name__ == '__main__':
-    print(42 * '*')
+if __name__ == "__main__":
+    print(42 * "*")
     print("set colors")
     set_some_colors()
     # print("pixels._buffer", pixels._buffer)
     # print("pixels", pixels)
 
-    print(42 * '*')
+    print(42 * "*")
     print("time meassurement:")
     time_meassurement()
 
-    print(42 * '*')
+    print(42 * "*")
     print("loop..")
     main_loop()
     # while True:

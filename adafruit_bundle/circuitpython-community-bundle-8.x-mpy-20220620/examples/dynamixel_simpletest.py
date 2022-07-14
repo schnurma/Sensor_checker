@@ -30,13 +30,13 @@ control = digitalio.DigitalInOut(board.D12)
 control.direction = digitalio.Direction.OUTPUT
 control.value = True
 uart = busio.UART(board.TX, board.RX, baudrate=1000000)
-ax12 = circuitpython_dynamixel.Dynamixel(uart,control)
-ax12.set_speed(0xfe,0x100)
+ax12 = circuitpython_dynamixel.Dynamixel(uart, control)
+ax12.set_speed(0xFE, 0x100)
 while True:
     print(ax12.get_temp(0x00))
-    ax12.set_position(0x00,0)
+    ax12.set_position(0x00, 0)
     time.sleep(1)
-    ax12.set_position(0x00,512)
+    ax12.set_position(0x00, 512)
     time.sleep(1)
-    ax12.set_position(0x00,1023)
+    ax12.set_position(0x00, 1023)
     time.sleep(1)

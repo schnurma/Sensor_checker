@@ -10,10 +10,13 @@ while True:
     key_count = kbd.key_count
     if key_count > 0:
         key = kbd.key
-        state = 'pressed'
+        state = "pressed"
         if key[0] == STATE_LONG_PRESS:
-            state = 'held down'
+            state = "held down"
         elif key[0] == STATE_RELEASE:
-            state = 'released'
+            state = "released"
 
-        print("key: '%s' (dec %d, hex %02x) %s" % (key[1], ord(key[1]), ord(key[1]), state))
+        print(
+            "key: '%s' (dec %d, hex %02x) %s"
+            % (key[1], ord(key[1]), ord(key[1]), state)
+        )

@@ -14,6 +14,7 @@ Enjoy the colors :-)
 import time
 
 import board
+
 # import busio
 import bitbangio
 import digitalio
@@ -22,16 +23,10 @@ import pulseio
 import slight_tlc5957
 
 ##########################################
-print(
-    "\n" +
-    (42 * '*') + "\n" +
-    __doc__ + "\n" +
-    (42 * '*') + "\n" +
-    "\n"
-)
+print("\n" + (42 * "*") + "\n" + __doc__ + "\n" + (42 * "*") + "\n" + "\n")
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("initialise digitalio pins for SPI")
 spi_clock = digitalio.DigitalInOut(board.SCK)
 spi_clock.direction = digitalio.Direction.OUTPUT
@@ -47,16 +42,15 @@ spi = bitbangio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # maximum frequency is currently hardcoded to 6MHz
 # https://github.com/adafruit/circuitpython/blob/master/ports/atmel-samd/common-hal/pulseio/PWMOut.c#L119
-gsclk_freqency = (6000 * 1000)  # 6MHz
-gsclk = pulseio.PWMOut(
-    board.D9, duty_cycle=(2 ** 15), frequency=gsclk_freqency)
-print("gsclk.frequency: {:}MHz".format(gsclk.frequency / (1000*1000)))
+gsclk_freqency = 6000 * 1000  # 6MHz
+gsclk = pulseio.PWMOut(board.D9, duty_cycle=(2**15), frequency=gsclk_freqency)
+print("gsclk.frequency: {:}MHz".format(gsclk.frequency / (1000 * 1000)))
 
 latch = digitalio.DigitalInOut(board.D7)
 latch.direction = digitalio.Direction.OUTPUT
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("define pixel array / init TLC5957")
 rows = 4
 cols = 4
@@ -68,7 +62,8 @@ pixels = slight_tlc5957.TLC5957(
     spi_clock=spi_clock,
     spi_mosi=spi_mosi,
     spi_miso=spi_miso,
-    pixel_count=num_leds)
+    pixel_count=num_leds,
+)
 
 print("pixel_count", pixels.pixel_count)
 print("chip_count", pixels.chip_count)
@@ -78,6 +73,7 @@ print("channel_count", pixels.channel_count)
 ##########################################
 # helper function
 
+
 def map_range(value, in_min, in_max, out_min, out_max):
     """Map Value from one range to another."""
     return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
@@ -85,11 +81,7 @@ def map_range(value, in_min, in_max, out_min, out_max):
 
 def map_range_int(value, in_min, in_max, out_min, out_max):
     """Map Value from one range to another."""
-    return int(
-        (value - in_min) * (out_max - out_min)
-        //
-        (in_max - in_min) + out_min
-    )
+    return int((value - in_min) * (out_max - out_min) // (in_max - in_min) + out_min)
 
 
 ##########################################
@@ -98,9 +90,9 @@ def map_range_int(value, in_min, in_max, out_min, out_max):
 pixel_map = [
     # pylint: disable=bad-whitespace
     [15, 14, 13, 12],
-    [11, 10,  9,  8],
-    [7,   6,  5,  4],
-    [3,   2,  1,  0],
+    [11, 10, 9, 8],
+    [7, 6, 5, 4],
+    [3, 2, 1, 0],
 ]
 
 
@@ -126,7 +118,7 @@ def get_pixel_index_from_row_col(row, col):
 # time.sleep(2)
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("set colors")
 # set first pixel to orange
 pixels[get_pixel_index_from_row_col(0, 0)] = (1.0, 0.5, 0.0)
@@ -162,7 +154,7 @@ time.sleep(2)
 # main loop
 # Positional offset for blue part
 offset = 0
-print(42 * '*')
+print(42 * "*")
 print("loop")
 while True:
     offsetN = map_range_int(offset, 0.0, 1.0, 1, 200)

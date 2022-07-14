@@ -5,6 +5,7 @@
 """Simple & Minimallistic example for the TLC5957 library."""
 
 import board
+
 # import busio
 import bitbangio
 import digitalio
@@ -24,8 +25,7 @@ spi_miso.direction = digitalio.Direction.INPUT
 spi = bitbangio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # 6MHz for the grayscale clock
-gsclk = pulseio.PWMOut(
-    board.D9, duty_cycle=(2 ** 15), frequency=(6000 * 1000))
+gsclk = pulseio.PWMOut(board.D9, duty_cycle=(2**15), frequency=(6000 * 1000))
 
 latch = digitalio.DigitalInOut(board.D7)
 latch.direction = digitalio.Direction.OUTPUT
@@ -39,7 +39,8 @@ pixels = slight_tlc5957.TLC5957(
     spi_clock=spi_clock,
     spi_mosi=spi_mosi,
     spi_miso=spi_miso,
-    pixel_count=num_leds)
+    pixel_count=num_leds,
+)
 
 
 # set first pixel to orange

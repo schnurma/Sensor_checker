@@ -1,18 +1,22 @@
 import microcontroller
 import bteve as eve
 
+
 def lerp(t, a, b):
     return a + (b - a) * t
-def map(x, x0, x1, y0 = 0, y1 = 1):
+
+
+def map(x, x0, x1, y0=0, y1=1):
     t = (x - x0) / (x1 - x0)
     t = max(0, min(t, 1))
     return lerp(t, y0, y1)
+
 
 def temperature(gd, sense):
     gd.cmd_romfont(30, 33)
     gd.cmd_romfont(31, 34)
 
-    xincr = .008 * gd.w
+    xincr = 0.008 * gd.w
     sparkline = []
     temp = sense()
     frames = 0
@@ -23,7 +27,9 @@ def temperature(gd, sense):
 
         gd.cmd_gradient(0, 0, 0x000010, gd.w, gd.h, 0x206060)
         gd.VertexFormat(3)
-        gd.cmd_text(gd.w // 2, gd.h // 9, 31, eve.OPT_CENTER, "CPU junction temperature")
+        gd.cmd_text(
+            gd.w // 2, gd.h // 9, 31, eve.OPT_CENTER, "CPU junction temperature"
+        )
 
         # Update sparkline every few frames
         if (frames % 6) == 0:
@@ -46,8 +52,10 @@ def temperature(gd, sense):
             gd.Vertex2f(x, y)
         gd.swap()
 
+
 def celsius():
     return microcontroller.cpu.temperature
+
 
 gd = eve.Gameduino()
 gd.init()

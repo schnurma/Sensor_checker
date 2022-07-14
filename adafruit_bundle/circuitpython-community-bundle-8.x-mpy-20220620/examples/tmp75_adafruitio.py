@@ -27,8 +27,8 @@ from Adafruit_IO import Client, Feed, errors
 # Set to your Adafruit IO username.
 # Set to your Adafruit IO key.
 # Remember, your key is a secret,
-#ADAFRUIT_IO_USERNAME = 'YOUR_AIO_USERNAME'
-#ADAFRUIT_IO_KEY = 'YOUR_AIO_KEY'
+# ADAFRUIT_IO_USERNAME = 'YOUR_AIO_USERNAME'
+# ADAFRUIT_IO_KEY = 'YOUR_AIO_KEY'
 # keep your username and secret key in a shared module
 from aoi_key import ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY
 
@@ -55,16 +55,18 @@ tmp75_error = False
 
 while True:
     try:
-        if tmp75_error: # if an error occured, re-write config register with 12 bits mode
+        if (
+            tmp75_error
+        ):  # if an error occured, re-write config register with 12 bits mode
             # pylint: disable=protected-access
             tmp75_sensor.config = barbudor_tmp75._CONFIG_CONVERTER_12BITS
             # pylint: enable=protected-access
-        temp = '%.2f'%(tmp75_sensor.temperature_in_C)
-        print('Temp2=%sC'%(temp))
+        temp = "%.2f" % (tmp75_sensor.temperature_in_C)
+        print("Temp2=%sC" % (temp))
         aio.send(tmp75_feed.key, temp)
         tmp75_error = False
     except OSError:
-        print('Failed to read TMP75, trying again in ', READ_TIMEOUT, 'seconds')
+        print("Failed to read TMP75, trying again in ", READ_TIMEOUT, "seconds")
         tmp75_error = True
 
     # Timeout to avoid flooding Adafruit IO

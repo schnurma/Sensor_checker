@@ -30,7 +30,7 @@ else:
     print('False')
 
 
-    """ 
+    """
 class Git_helper:
 
     def __init__(self):
@@ -59,4 +59,4 @@ Git_helper.download_git_lib(self)
 # Creates a list of all subdirectories in the assigned directory
 def get_immediate_subdirectories(a_dir):
     return [name for name in os.listdir(a_dir)
-            if os.path.isdir(os.path.join(a_dir, name))]      
+            if os.path.isdir(os.path.join(a_dir, name))]

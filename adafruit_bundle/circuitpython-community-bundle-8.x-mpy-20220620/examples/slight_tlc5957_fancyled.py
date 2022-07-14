@@ -12,6 +12,7 @@ Enjoy the colors :-)
 """
 
 import board
+
 # import busio
 import bitbangio
 import digitalio
@@ -21,16 +22,10 @@ import slight_tlc5957
 import adafruit_fancyled.adafruit_fancyled as fancyled
 
 ##########################################
-print(
-    "\n" +
-    (42 * '*') + "\n" +
-    __doc__ + "\n" +
-    (42 * '*') + "\n" +
-    "\n"
-)
+print("\n" + (42 * "*") + "\n" + __doc__ + "\n" + (42 * "*") + "\n" + "\n")
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("initialise digitalio pins for SPI")
 spi_clock = digitalio.DigitalInOut(board.SCK)
 spi_clock.direction = digitalio.Direction.OUTPUT
@@ -46,16 +41,15 @@ spi = bitbangio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # maximum frequency is currently hardcoded to 6MHz
 # https://github.com/adafruit/circuitpython/blob/master/ports/atmel-samd/common-hal/pulseio/PWMOut.c#L119
-gsclk_freqency = (6000 * 1000)  # 6MHz
-gsclk = pulseio.PWMOut(
-    board.D9, duty_cycle=(2 ** 15), frequency=gsclk_freqency)
-print("gsclk.frequency: {:}MHz".format(gsclk.frequency / (1000*1000)))
+gsclk_freqency = 6000 * 1000  # 6MHz
+gsclk = pulseio.PWMOut(board.D9, duty_cycle=(2**15), frequency=gsclk_freqency)
+print("gsclk.frequency: {:}MHz".format(gsclk.frequency / (1000 * 1000)))
 
 latch = digitalio.DigitalInOut(board.D7)
 latch.direction = digitalio.Direction.OUTPUT
 
 ##########################################
-print(42 * '*')
+print(42 * "*")
 print("define pixel array / init TLC5957")
 num_leds = 16
 pixels = slight_tlc5957.TLC5957(
@@ -65,7 +59,8 @@ pixels = slight_tlc5957.TLC5957(
     spi_clock=spi_clock,
     spi_mosi=spi_mosi,
     spi_miso=spi_miso,
-    pixel_count=num_leds)
+    pixel_count=num_leds,
+)
 
 print("pixel_count", pixels.pixel_count)
 print("chip_count", pixels.chip_count)
@@ -92,7 +87,7 @@ offset = 0
 
 ##########################################
 # main loop
-print(42 * '*')
+print(42 * "*")
 print("rainbow loop")
 while True:
     for i in range(num_leds):

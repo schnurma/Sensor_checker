@@ -26,7 +26,9 @@ spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 
 """Use below for Most Boards"""
-status_light = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.2)  # Uncomment for Most Boards
+status_light = neopixel.NeoPixel(
+    board.NEOPIXEL, 1, brightness=0.2
+)  # Uncomment for Most Boards
 """Uncomment below for ItsyBitsy M4"""
 # status_light = dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.2)
 # Uncomment below for an externally defined RGB LED
@@ -123,7 +125,9 @@ while frame_length > 0:
     frame_length -= 32
 
 # Detect objects
-image_prediction = client.detect_image(secrets["project_id"], secrets["published_name"], buffer)
+image_prediction = client.detect_image(
+    secrets["project_id"], secrets["published_name"], buffer
+)
 
 for prediction in image_prediction.predictions:
     print(

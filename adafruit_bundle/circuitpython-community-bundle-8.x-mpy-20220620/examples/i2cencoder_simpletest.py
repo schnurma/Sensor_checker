@@ -19,49 +19,64 @@ INT.pull = digitalio.Pull.UP
 i2c = busio.I2C(board.SCL, board.SDA)
 encoder = i2cencoderlibv21.I2CEncoderLibV21(i2c, 0x21)
 
+
 def EncoderChange():
     encoder.write_rgb_code(0x00FF00)
-    valBytes = struct.unpack('>i', encoder.readCounter32())
-    print ('Changed: {}'.format(valBytes[0]))
+    valBytes = struct.unpack(">i", encoder.readCounter32())
+    print("Changed: {}".format(valBytes[0]))
+
 
 def EncoderIncrement():
-    print ('Incrementing...')
+    print("Incrementing...")
+
 
 def EncoderPush():
     encoder.write_rgb_code(0x0000FF)
-    print ('Encoder Pushed!')
+    print("Encoder Pushed!")
+
 
 def EncoderRelease():
     encoder.write_rgb_code(0x00FFFF)
-    print ('Encoder Released!')
+    print("Encoder Released!")
+
 
 def EncoderDoublePush():
     encoder.write_rgb_code(0xFF00FF)
-    print ('Encoder Double Push!')
+    print("Encoder Double Push!")
+
 
 def EncoderMax():
     encoder.write_rgb_code(0xFF0000)
-    print ('Encoder max!')
+    print("Encoder max!")
+
 
 def EncoderMin():
     encoder.write_rgb_code(0xFF0000)
-    print ('Encoder min!')
+    print("Encoder min!")
+
 
 def EncoderFade():
     encoder.write_rgb_code(0x000000)
 
+
 def Encoder_INT():
     encoder.update_status()
 
+
 # Start by resetting the encoder. Reset takes 400us , so let us give it time to settle.
 encoder.reset()
-time.sleep(.1)
+time.sleep(0.1)
 
 # When the board was initialized, the default config was loaded.
 # Here we can override that config if we want.
-encconfig = (i2cencoderlibv21.INT_DATA | i2cencoderlibv21.WRAP_DISABLE
-             | i2cencoderlibv21.DIRE_RIGHT | i2cencoderlibv21.IPUP_DISABLE
-             | i2cencoderlibv21.RMOD_X1 | i2cencoderlibv21.RGB_ENCODER)
+encconfig = (
+    i2cencoderlibv21.INT_DATA
+    | i2cencoderlibv21.WRAP_DISABLE
+    | i2cencoderlibv21.DIRE_RIGHT
+    | i2cencoderlibv21.IPUP_DISABLE
+    | i2cencoderlibv21.RMOD_X1
+    | i2cencoderlibv21.RGB_ENCODER
+)
 encoder.begin(encconfig)
 
 # Setup other varibles
@@ -88,5 +103,5 @@ encoder.onFadeProcess = EncoderFade
 encoder.autoconfig_interrupt()
 
 while True:
-    if not INT.value:       #If INT pin goes LOW - we know the encoder status changed.
+    if not INT.value:  # If INT pin goes LOW - we know the encoder status changed.
         Encoder_INT()

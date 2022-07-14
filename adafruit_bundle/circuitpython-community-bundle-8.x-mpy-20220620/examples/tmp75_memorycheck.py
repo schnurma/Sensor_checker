@@ -6,15 +6,24 @@ import board
 
 i2c_bus = board.I2C()
 
-gc.collect(); gc.collect(); gc.collect(); before = gc.mem_free();
+gc.collect()
+gc.collect()
+gc.collect()
+before = gc.mem_free()
 
 from barbudor_tmp75 import TMP75
 
-gc.collect(); gc.collect(); gc.collect(); after = gc.mem_free();
+gc.collect()
+gc.collect()
+gc.collect()
+after = gc.mem_free()
 
 tmp75 = TMP75(i2c_bus)
 
-gc.collect(); gc.collect(); gc.collect(); instance = gc.mem_free();
+gc.collect()
+gc.collect()
+gc.collect()
+instance = gc.mem_free()
 
 print("Import used    : %d bytes" % (before - after))
 print("Instance used  : %d bytes" % (after - instance))

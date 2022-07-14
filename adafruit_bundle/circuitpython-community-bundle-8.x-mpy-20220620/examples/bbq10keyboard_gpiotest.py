@@ -13,7 +13,7 @@ prev_value = card_detect.value
 
 while True:
     if card_detect.value != prev_value:
-        print('Card Detect: %d' % card_detect.value)
+        print("Card Detect: %d" % card_detect.value)
 
         prev_value = card_detect.value
 
