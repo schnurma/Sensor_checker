@@ -8,10 +8,12 @@ USER root
 
 # Variable for the sensor name
 # ${variable_name}
-# ENV SENSOR_NODE = NODE_PLACE_HOLDER, {Value} will be replaced
+# Sensor Node Name {Value} will be replaced
 # ${SENSOR_NODE} = NODE_PLACEHOLDER
-# ENV SENSOR_VAR = SENSOR_PLACE_HOLDER, {Value} will be replaced
+# Sensor Name{Value} will be replaced
 # ${SENSOR_VAR} = SENSOR_PLACEHOLDER
+# sensor.py file {Value} will be replaced
+# ${SENSOR_PY} = SENSOR_PLACEHOLDER
 
 
 # install packages
@@ -91,19 +93,21 @@ RUN sudo pip3 install adafruit-circuitpython-${SENSOR_VAR}
 #COPY package.xml /root/colcon_ws/src/${SENSOR_NODE}/.
 COPY README.md /root/colcon_ws/src/${SENSOR_NODE}/.
 COPY src /root/colcon_ws/src/${SENSOR_NODE}/src/.
-# Python Lib Folder (mandatory with init.py)
+# Python Lib Folder (mandatory with __init__.py)
 COPY ${SENSOR_NODE} /root/colcon_ws/src/${SENSOR_NODE}/${SENSOR_NODE}
 # CPP Lib Folder not needed!
 #COPY include /root/colcon_ws/src/${SENSOR_NODE}/include
 
 # Make Python Files exectuable
 RUN cd /root/colcon_ws/ \
-    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/${SENSOR_VAR}.py
+    && chmod +x /root/colcon_ws/src/${SENSOR_NODE}/src/${SENSOR_PY}
 
 # Blinka walkaround
 # Libs are located /usr/local/lib/python3.?/dist-packages
 # python3.8 is the used in this image!
+# there needs to be a wildcard for the python version!!! 3.?
 # complete folder from platformdetect and blinka has to be replaced as long as there is no offical release of the iot2050 or via git...!
+# 
 COPY blinka/src /usr/local/lib/python3.8/dist-packages
 COPY platformdetect /usr/local/lib/python3.8/dist-packages
 

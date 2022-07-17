@@ -1,8 +1,3 @@
-SPDX-FileCopyrightText: 2022 Martin Schnur for Siemens AG
-
-SPDX-License-Identifier: MIT
-
-
 #Sensor_checker#
 Tool for checking Sensortype and decide which ROS2 Messagetype is needed.
 
