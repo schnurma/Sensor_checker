@@ -6,10 +6,10 @@
 # SPDX-License-Identifier: MIT
 
 """
-’helper.py’ 
+`helper.py`
 ================================================================================
 
-Containts the outsourced classes for the main script.
+Containts the outsourced classes and fucntions for the main script.
 
 * Author(s): Martin Schnur
 
@@ -39,27 +39,21 @@ import shutil
 import subprocess
 import datetime
 
+# ??? from msilib.schema import Class
 
-# TEST VARIABLES AND STUFFF
-# /////////////////////////////////////////////////////////////////////////////
-# subdir_path = '/home/workshopper/Documents/GitHub/Sensor_checker/resources/Adafruit_CircuitPython_Bundle-main/libraries/drivers/'
-# search_str = "hts221"
-
-# /////////////////////////////////////////////////////////////////////////////
-
-# exit programm, clear folders (resources, )
+# Exit programm, clear folders (resources, )
 def exit_program():
 
-    
+    # TODO: clear resources folder
+    # TODO: ???
     sys.exit("User aborted the Program")
-
-
 
 
 # Class for the Adafruit Library:
 class Sensor_Library:
-
-    def __init__(self, path_to_dir: str, url: str, search_str: str, subdir_path: str):
+    def __init__(
+        self, path_to_dir: str, url: str, search_str: str, subdir_path: str
+    ) -> None:
         self.path_to_dir = path_to_dir  # local path for all downloads
         self.url = url  # url for the file
         self.search_str = search_str  # search string for the file
@@ -68,11 +62,11 @@ class Sensor_Library:
         self.file_path = None
         self.check_git_lib()
         self.get_subdir_list()
-        
-    # checks if file exists, check time of last update, 
+
+    # Checks if file exists, check time of last update,
     # if file is older than 24h, download new file
     # https://stackoverflow.com/questions/5799070/how-to-see-if-file-is-older-than-3-months-in-python
-    def check_git_lib(self):
+    def check_git_lib(self) -> None:
         lib_stat = True
         try:
             file_time = os.path.getmtime(self.subdir_path)
@@ -86,24 +80,18 @@ class Sensor_Library:
             print("ERROR: File not found, downloading new file")
             lib_stat = False
 
-        if lib_stat == False :
+        if lib_stat == False:
             self.download_git_lib(self.url, self.search_str, self.path_to_dir)
 
-        """today = datetime.datetime.now()
-        modified_time = datetime.datetime.fromtimestamp(os.path.getmtime(self.subdir_path))
-        diff = today - modified_time
-        diff.total_seconds() > 86400  # 24h in seconds
-        True"""
-
-    # downloads and unzips the requested file
-    def download_git_lib(self, url: str, search_str: str, path_to_dir: str):
+    # Downloads and unzips the requested file
+    def download_git_lib(self, url: str, search_str: str, path_to_dir: str) -> None:
         self.file_path = path_to_dir + "/" + search_str
 
         # Safe as a file
         r = requests.get(url, allow_redirects=True)
         open(self.file_path, "wb").write(r.content)
 
-        # if .zip file unzip
+        # If .zip file unzip
         try:
             if url.endswith(".zip"):
                 with zipfile.ZipFile(self.file_path, "r") as zip_ref:
@@ -114,7 +102,7 @@ class Sensor_Library:
     # https://www.techiedelight.com/list-all-subdirectories-in-directory-python/
     # https://realpython.com/working-with-files-in-python/
     # Creates and returns list of all folders in subdir_path
-    def get_subdir_list(self):
+    def get_subdir_list(self) -> list:
         search_dir = self.subdir_path
         self.list_sensors = []
         for path in Path(search_dir).iterdir():
@@ -124,42 +112,34 @@ class Sensor_Library:
         return self.list_sensors
 
 
-
 # Class for Sensor Node:
 class Sensors_node:
-
-    # SETTINGS for Sensor Node:
-    
-    # PATHS and NAMING:
-    
 
     # Installation Type Statement (node.type_str)
     MODE_1 = "without ROS2 node"
     MODE_2 = "with ROS2 node"
 
-
-    def __init__(self, sensor: str , path_to_dir: str):
+    def __init__(self, sensor: str, path_to_dir: str) -> None:
         self.sensor = sensor
-        self.name = "py_" + self.sensor # Node Name
+        self.name = "py_" + self.sensor  # Node Name
         self.path_to_dir = path_to_dir  # local path for all downloads
         self.folder_name = ""  # local path for the file
         self.file_path = self.path_to_dir + "/" + self.folder_name
         self.package_name = "Adafruit_CircuitPython_" + self.sensor
         self.url = (
-                    "https://github.com/adafruit/Adafruit_CircuitPython_"
-                    + self.sensor
-                    + "/archive/refs/heads/main.zip"
-                    )
+            "https://github.com/adafruit/Adafruit_CircuitPython_"
+            + self.sensor
+            + "/archive/refs/heads/main.zip"
+        )
         self.type = 1  # Installation Type
-        self.dir = "" # installer dir (Docker Image and ROS2 node)
+        self.dir = ""  # installer dir (Docker Image and ROS2 node)
         self.node_type(self.type)
         self.download_git_lib()
         self.pip_install()
         self.find_folder()
-        #self.get_subfile_list()
 
-    # set note type:
-    def node_type(self, node_type):
+    # Set note type:
+    def node_type(self, node_type: int) -> None:
         self.type = int(node_type)
         while True:
             if self.type == 1:
@@ -176,18 +156,18 @@ class Sensors_node:
                 self.type = int(input("Enter 1 or 2: "))
                 continue
 
-    # change name of node:
-    def node_name(self, node_name):
+    # Change name of node:
+    def node_name(self, node_name: str) -> None:
         self.name = node_name
 
-     # downloads and unzips the requested file
-    def download_git_lib(self):
+    # Downloads and unzips the requested file:
+    def download_git_lib(self) -> None:
         file_path = self.path_to_dir + "/" + self.sensor
-        # Safe as a file
-        r = requests.get(self.url, allow_redirects=True)  # download file
+        # download and safe as a file
+        r = requests.get(self.url, allow_redirects=True)
         open(file_path, "wb").write(r.content)
 
-        # if .zip file unzip
+        # if *.zip file, unzip
         try:
             if self.url.endswith(".zip"):
                 with zipfile.ZipFile(file_path, "r") as zip_ref:
@@ -195,58 +175,61 @@ class Sensors_node:
         except TypeError:
             print("ERROR: File is not a .zip")
 
-    # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
-    # Installs the Sensors Library with pip
+    # Installs the Sensors Library with pip:
     # i.e. pip3 install adafruit-circuitpython-lis3dh
-    def pip_install(self):
+    # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
+    def pip_install(self) -> None:
         try:
-            #package = "adafruit-circuitpython-" + search_str
+            # package = "adafruit-circuitpython-" + self.sensor
             # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
             print("Installing:", self.package_name)
             print("THIS IS A TEST LINE, REMOVE LATER and uncomment subprocess...")
         except subprocess.CalledProcessError as e:
             print("Error:", e)
 
-    # find the sensor-main folder:
-    def find_folder(self):
+    # Find the sensor-main folder:
+    def find_folder(self) -> None:
         file_name = self.sensor + "-main"
         for path in Path(self.path_to_dir).iterdir():
+            # search, case-insensitive = re.I
             if re.search(file_name, path.name, re.I):
                 self.folder_name = path.name
                 self.file_path = self.path_to_dir + "/" + self.folder_name
                 print(f"Found this folder {self.file_path}")
 
-    
-    # list_sensors = get_subdir_list(subdir_path) ???
-    # Creates specific filepath for subfolder and adds files to list
-    def get_subfile_list(self):
+    # Creates specific filepath for subfolder and adds files to list:
+    def get_subfile_list(self) -> None:
         ar_types = ["examples", "library"]
         for search_type in ar_types:
             if search_type == "examples":
                 self.list_subfile_1 = []
                 self.search_dir[0] = self.file_path + self.EXAMPLES
                 file_name = ".py"
-                self.fill_subfile_list(self.search_dir[0], file_name, self.list_subfile_1)
+                self.fill_subfile_list(
+                    self.search_dir[0], file_name, self.list_subfile_1
+                )
             elif search_type == "library":
                 self.list_subfile_2 = []
                 self.search_dir[1] = self.file_path + self.LIBRARY
                 file_name = self.sensor + ".py"
-                self.fill_subfile_list(self.search_dir[1], file_name, self.list_subfile_2)
-          
+                self.fill_subfile_list(
+                    self.search_dir[1], file_name, self.list_subfile_2
+                )
+
     # Inner Class for filepaths:
     class Filepath:
-        """ Creating a subclass for the needed filepaths to the Library *.py file 
-            and the examples *.py files for the user menue and to copy these files
-            when choosen for the Docker Image.
+        """Creating a subclass for the needed filepaths to the Library *.py file
+        and the examples *.py files for the user menue and to copy these files
+        when choosen for the Docker Image.
         """
-        # list_types = ["examples", "library"]
+
+        # list_types = ["examples", "library"]:
         EXAMPLES = "/examples"
         LIBRARY = "/"
-      
 
-        def __init__(self, sensor: str, code_type: str, file_path: str):
+        def __init__(self, sensor: str, code_type: str, file_path: str) -> None:
             self.sensor = sensor
-            self.code_type = code_type  # examples or library *.py 
+            self.code_type = code_type  # examples or library *.py
             self.file_path = file_path
             self.code_path = None
             self.list = []
@@ -254,7 +237,8 @@ class Sensors_node:
             self.list_py = 0
             self.init(code_type)
 
-        def init(self, mode="library"):
+        # Set filepaths:
+        def init(self, mode="library") -> None:
             if mode == "library":
                 self.code_path = self.file_path + self.LIBRARY
                 self.file_name = self.sensor + ".py"
@@ -264,11 +248,12 @@ class Sensors_node:
             else:
                 print("ERROR: Wrong mode")
                 return None
+
             self.fill_list()
-        
-        def fill_list(self):
-            """ Creates a list of all *.py files in the directory """
-            """ Problem no Lib file -> there should be a Lib Folder! With other *.py files """
+
+        # Creates a list of all *.py files in the directory:
+        # Problem no Lib file -> there should be a Lib Folder! With other *.py files
+        def fill_list(self) -> None:
             for f_name in Path(self.code_path).iterdir():
                 # if f_name.is_file():
                 if f_name.name.endswith(self.file_name):
@@ -278,40 +263,40 @@ class Sensors_node:
                     self.list_path.append(list_path)
                     print("Found this file", f_name.name)
 
-        def list_menue(self):
-            """ Creates a list of all *.py files in the directory """
-            """ User can select file"""
+        # Creates a list of all *.py files in the directory:
+        # User can select file
+        def list_menue(self) -> str:
             print("List of files:")
             for i in range(len(self.list)):
                 print(i, self.list[i])
             print("")
             print("Enter the number of file:")
             filenum = input()
-            #file_path = self.code_path + "/" + self.list[int(file_num)]
             return filenum
 
-        def set_py(self, filenum):
-            """ Sets the filepath to the *.py file """
+        # Sets and returns the filepath of the selected file:
+        def set_py(self, filenum: str) -> None:
             self.list_py = filenum
-            print(f"Set this file: {self.list[int(filenum)]}", )
-            print(f"Set this file: {self.list_path[int(filenum)]}", )
+            print(
+                f"Set this file: {self.list[int(filenum)]}",
+            )
+            print(
+                f"Set this file: {self.list_path[int(filenum)]}",
+            )
 
-
-
-##############################################################################
-
-
+        # End of Subclass Filepath:
+        # /////////////////////////////////////////////////////////////////////////
 
     # creats a list of all files in subdir_path:
-    def fill_subfile_list(self, search_dir, file_name, list_subfile):
+    def fill_subfile_list(
+        self, search_dir: str, file_name: str, list_subfile: list
+    ) -> None:
         for f_name in Path(search_dir).iterdir():
-                # if f_name.is_file():
-                if f_name.name.endswith(file_name):
-                    # print(f_name)
-                    list_subfile.append(f_name.name)
-                    print("Found this file", f_name.name)
+            if f_name.name.endswith(file_name):
+                list_subfile.append(f_name.name)
+                print("Found this file", f_name.name)
 
-    def list_menue(self, list_subfile):
+    def list_menue(self, list_subfile: list) -> str:
 
         print("List of files:")
         for i in range(len(list_subfile)):
@@ -319,62 +304,58 @@ class Sensors_node:
         print("")
         print("Enter number of file to open:")
         file_num = input()
-        file_path = self.search_dir[0]+ "/" + list_subfile[int(file_num)]
+        file_path = self.search_dir[0] + "/" + list_subfile[int(file_num)]
         return file_path
 
 
-# open example code in nano editor
-def open_nano(file_path):
+# End of Class Sensor:
+# /////////////////////////////////////////////////////////////////////////////
+
+
+# Open example code in nano editor:
+def open_nano(file_path: str) -> None:
     print("Opening nano editor for:", file_path)
     # subprocess.call(['nano', 'resources/Adafruit_CircuitPython_SGP30-main/examples/sgp30_simpletest.py'])
     subprocess.call(["nano", file_path])
 
 
-# runs example code with python3
-def run_code(file_path):
+# Runs example code with python3:
+def run_code(file_path: str) -> None:
     print("Running code:", file_path)
     subprocess.call(["python3", file_path])
 
 
+# Creates and returns list of all folders in subdir_path:
 # https://www.techiedelight.com/list-all-subdirectories-in-directory-python/
 # https://realpython.com/working-with-files-in-python/
-# Creates and returns list of all folders in subdir_path
-def get_subdir_list(search_dir):
+def get_subdir_list(search_dir: str) -> list:
     list_sensors = []
-
     for path in Path(search_dir).iterdir():
         if path.is_dir():
-            # print(path)
             list_sensors.append(path.name)
 
-    # print(list_sensors)
     return list_sensors
 
 
-# Creates and returns list of all files in subdir_path
+# Creates and returns list of all files in subdir_path:
 # with search_str in file name
 # case insensitive !
 # https://www.tutorialspoint.com/python/python_reg_expressions.htm
-def get_subdir_list2(search_str, search_dir, search_type):
+def get_subdir_list2(search_str: str, search_dir: str, search_type: str) -> list:
     list_sensors = []
     if search_type == "main":
         file_name = search_str + "-main"
-
     for path in Path(search_dir).iterdir():
-        """if path.name.endswith(file_name):"""
         if re.search(file_name, path.name, re.I):
-            # print(path)
             list_sensors.append(path.name)
-
             print("Found this file", path.name)
 
-    # print(list_sensors)
     return list_sensors
 
 
+# Creates and returns list of all files in subdir_path:
 # list_sensors = get_subdir_list(subdir_path) ???
-# Creates and returns list of all files in subdir_path
-def get_subfile_list(search_str, search_dir, search_type):
+def get_subfile_list(search_str: str, search_dir: str, search_type: str) -> list:
     list_subfile = []
     if search_type == "examples":
         search_dir = search_dir + "examples/"
@@ -383,17 +364,15 @@ def get_subfile_list(search_str, search_dir, search_type):
         file_name = search_str + ".py"
 
     for f_name in Path(search_dir).iterdir():
-        # if f_name.is_file():
         if f_name.name.endswith(file_name):
-            # print(f_name)
             list_subfile.append(f_name.name)
             print("Found this file", f_name.name)
 
     return list_subfile
 
 
-# creates menue with list elements and returns user input
-def list_menue(search_type, search_dir, list_subfile):
+# Creates menue with list elements and returns user input:
+def list_menue(search_type: str, search_dir: str, list_subfile: list) -> str:
     if search_type == "examples":
         search_dir = search_dir + "examples/"
         file_name = ".py"
@@ -408,8 +387,8 @@ def list_menue(search_type, search_dir, list_subfile):
     return file_path
 
 
-# finde file in subdir_path
-def find_file(search_str, search_type, search_dir):
+# Find file in subdir_path:
+def find_file(search_str: str, search_type: str, search_dir: str) -> str:
     # /resources/*Sensor/examples/
     # Adafruit_CircuitPython_SGP30-main
     if search_type == "examples":
@@ -419,7 +398,7 @@ def find_file(search_str, search_type, search_dir):
         file_name = search_str + ".py"
 
     # dist_packages = "/resources/Adafruit_CircuitPython_" + search_str + "-main" + "/examples/"
-    # dist_packages  = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
+    # i.e. : "resources/Adafruit_CircuitPython_SGP30-main/examples/"
     # carefull "in" is case sensitive  !
     for f_name in os.listdir(search_dir):
         if f_name.endswith(file_name):
@@ -427,18 +406,15 @@ def find_file(search_str, search_type, search_dir):
             file_path = search_dir + f_name
             print(file_path)
             return file_path
-            # open_nano(file_path)
     else:
         print("ERROR: File not found")
         return False
 
 
-#
+# Search and open the Library file:
 # search_str = "hts221"
-# dist_packages = '/usr/local/lib/python3.8/dist-packages'
-#
-# search and open the Library file:
-def show_sensor_info(search_str, dist_packages):
+# dist_packages IOT2050 = '/usr/local/lib/python3.8/dist-packages'
+def show_sensor_info(search_str: str, dist_packages: str) -> None:
     file_name = search_str + ".py"
     # print(path)
     for f_name in os.listdir(dist_packages):
@@ -450,8 +426,8 @@ def show_sensor_info(search_str, dist_packages):
         return False
 
 
-# prints the sensor implementation notes
-def check_file(search_str):
+# Prints the sensor implementation notes:
+def check_file(search_str: str) -> None:
     START_PATTERN = "==="
     END_PATTERN = "Software"
 
@@ -474,71 +450,67 @@ def check_file(search_str):
                 print(line)
 
 
-# find example code for sensor
-def find_example_code(search_str, dist_packages):
+# Finds example code for sensor:
+def find_example_code(search_str: str, dist_packages: str) -> str:
     # /resources/*Sensor/examples/
     # Adafruit_CircuitPython_SGP30-main
     # search in dist-package after sensor lib load Implemantion Notes
 
     file_name = ".py"
     # dist_packages = "/resources/Adafruit_CircuitPython_" + search_str + "-main" + "/examples/"
-    # dist_packages  = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
+    # i.e. = "resources/Adafruit_CircuitPython_SGP30-main/examples/"
     # carefull "in" is case sensitive  !
-    # file_path =
     for f_name in os.listdir(dist_packages):
         if f_name.endswith(file_name):
             print("Found this file", f_name)
             file_path = dist_packages + f_name
             print(file_path)
             return file_path
-            # open_nano(file_path)
     else:
         print("ERROR: Example Code not found")
         return False
 
 
 from distutils.dir_util import copy_tree
-# creates new directory for sensor node
-def create_new_dir(search_str, node_name, source_dir):
+
+# Creates new directory for sensor node:
+def create_new_dir(search_str: str, node_name: str, source_dir: str) -> None:
     # source_dir = "installer/"
     copy_tree(source_dir, node_name)
 
 
-# creates needed directories for Docker Image / ROS2 Node
-# also possible to create a bash.sh for less code in this file...
-def create_dirs(node_name):
+# Creates needed directories for Docker Image / ROS2 Node:
+def create_dirs(node_name: str) -> None:
     dir_name = node_name
     node_include = "include/" + node_name
     node_name_init = node_name + "/" + "__init__.py"
+    # List of folders to create:
     subdir_list = [node_name_init, node_include, "resource", "src"]
 
     for line in subdir_list:
         try:
             dir_name_sub = dir_name + "/" + line
             os.umask(0)
-            # pathlib.Path(dir_name_sub).mkdir(mode=0o777, parents=True, exist_ok=True)
             print("Creating directory:", dir_name_sub)
             os.makedirs(dir_name_sub, mode=0o777, exist_ok=True)
         except FileExistsError:
             print("Directory ", dir_name_sub, " already exists")
 
 
-# copys all *.py into node_name/src
-def copy_src_2(sensor, dir_name, file_path, file):
-    
+# Copys all *.py into node_name/src
+def copy_src_2(sensor: str, dir_name: str, file_path: str, file: list) -> None:
     try:
         for i in range(len(file_path)):
 
             target_list = dir_name + "/src/" + file[i]
             shutil.copyfile(file_path[i], target_list)
-            # Path(line).rename(target_list[i])
             print("Copying:", file_path[i], "to:", target_list)
     except:
         print("ERROR: File not found or already exists")
 
 
-# copys .py into node_name/src
-def copy_src(search_str, dir_name, file_path):
+# Copys .py into node_name/src:
+def copy_src(search_str: str, dir_name: str, file_path: str) -> None:
     source_list = file_path
     target_list = dir_name + "/src/" + search_str
     i = 0
@@ -549,9 +521,10 @@ def copy_src(search_str, dir_name, file_path):
     except:
         print("ERROR: File not found or already exists")
 
-# moves all needed files to the new directory
+
+# Moves all needed files to the new directory:
 # Permissions problems....!!!
-def copy_files(node_name):
+def copy_files(node_name: str) -> None:
     dir_name = node_name
     source_list = [
         "installer/README.md",
@@ -575,11 +548,12 @@ def copy_files(node_name):
         except:
             print("ERROR: File not found or already exists")
 
-# copy files from resources to node_name
-# blinka = files for the blinka platform till offical release
-# platformdetect = files for the platformdetect platform till offical release
-# usr = files for mraa !
-def copy_dirs(node_name):
+
+# Copy files from resources to node_name:
+# blinka: files for the blinka platform till offical release
+# platformdetect: files for the platformdetect platform till offical release
+# usr: files for mraa !
+def copy_dirs(node_name: str) -> None:
     dir_name = node_name
     source_list = ["installer/blinka", "installer/platformdetect", "installer/usr"]
     target_list = [
@@ -599,8 +573,8 @@ def copy_dirs(node_name):
             print("ERROR: File not found or already exists")
 
 
-# finds Placeholder in the file and replaces it with the node_name
-def replace_string(file_path, search_str, replace_str):
+# Finds Placeholder in the file and replaces it with the Variable:
+def replace_string(file_path: str, search_str: str, replace_str: str) -> None:
     try:
         with open(file_path) as f:
             s = f.read()
@@ -612,12 +586,12 @@ def replace_string(file_path, search_str, replace_str):
 
 
 # Create Dockerfile:
-def create_dockerfile(sensor_1, filepath_1, filepath_2):
+def create_dockerfile(sensor_1, filepath_1, filepath_2) -> None:
 
     # Creates Docker / ROS2 Directory Structure:
     create_new_dir(sensor_1, sensor_1.name, sensor_1.dir)
     # name of the .py file has to be the same in CMakeLists.txt for the ROS2 Node!!!
-    copy_src_2(sensor_1.sensor, sensor_1.name,filepath_1.list_path, filepath_1.list)
+    copy_src_2(sensor_1.sensor, sensor_1.name, filepath_1.list_path, filepath_1.list)
     create_dirs(sensor_1.name)
 
     # updates Files, changes Placerholder with Sensor Name and Node Name:
@@ -652,11 +626,16 @@ def create_dockerfile(sensor_1, filepath_1, filepath_2):
     replace_string(file_path, placeholder, filepath_1.list[int(filepath_1.list_py)])
 
 
-def run_docker_image(node_name):
+def run_docker_image(node_name: str) -> None:
     docker_command = "docker build .-t " + node_name
-
+    # subprocess.check_output(docker_command, stderr=subprocess.STDOUT, shell=True)
+    # subprocess.run(docker_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    with open("/tmp/output.log", "a") as output:
+        subprocess.call(docker_command, shell=True, stdout=output, stderr=output)
+    """
     try:
         with open("/tmp/output.log", "a") as output:
             subprocess.call(docker_command, shell=True, stdout=output, stderr=output)
     except:
         print("Docker not found")
+    """

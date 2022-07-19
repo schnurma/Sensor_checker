@@ -107,7 +107,7 @@ RUN cd /root/colcon_ws/ \
 # python3.8 is the used in this image!
 # there needs to be a wildcard for the python version!!! 3.?
 # complete folder from platformdetect and blinka has to be replaced as long as there is no offical release of the iot2050 or via git...!
-# 
+#
 COPY blinka/src /usr/local/lib/python3.8/dist-packages
 COPY platformdetect /usr/local/lib/python3.8/dist-packages
 

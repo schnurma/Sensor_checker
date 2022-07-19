@@ -1,6 +1,8 @@
 #Sensor_checker#
 Tool for checking Sensortype and decide which ROS2 Messagetype is needed.
 
+# DEV NOTES TEMP #
+
 "resources" ist der lokale Ordner für alle Daten die vom GitHub geladen werden oder erstellt werden.
 sensor_info.txt wird beim einlesen der Lib Info erstellt.
 
@@ -8,6 +10,16 @@ Fürs testen:
 libs "adafruit_*.py" vom Sensor direkt im Ordner
 "lib" und "adafruit_bundle"
 code_dump.txt und classes_objects.py
+
+
+
+User should input Sensor ID to search in Adafruit Sensor Library
+Searching in Lib for Sensor ID, downloads the file
+Prints out Implementation Notes and Connection Type (I2C, SPI, etc...)
+Develops Core for ROS2 and Dockercontainer with Comments what is needed to implement?
+implement GUI?
+
+ERROR HANDLING !!!???!!!
 
 
 Meine Idee:
