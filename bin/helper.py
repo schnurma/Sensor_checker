@@ -28,29 +28,30 @@ from logging import NOTSET
 from venv import create
 from xml.dom.minidom import Element
 from pathlib import Path
+from distutils.dir_util import copy_tree
 
 import sys
 import re
 import os
-import requests
-import zipfile
 import pathlib
 import shutil
-import subprocess
 import datetime
+import zipfile
+import requests
+import subprocess
+
 
 # ??? from msilib.schema import Class
 
-# Exit programm, clear folders (resources, )
-def exit_program():
-
+def exit_program() -> None:
+    """Exit programm, clear folders (resources, )"""
     # TODO: clear resources folder
     # TODO: ???
     sys.exit("User aborted the Program")
 
 
-# Class for the Adafruit Library:
-class Sensor_Library:
+class SensorLibrary:
+    """Class for the Adafruit Library:"""
     def __init__(
         self, path_to_dir: str, url: str, search_str: str, subdir_path: str
     ) -> None:
@@ -80,7 +81,7 @@ class Sensor_Library:
             print("ERROR: File not found, downloading new file")
             lib_stat = False
 
-        if lib_stat == False:
+        if lib_stat is False:
             self.download_git_lib(self.url, self.search_str, self.path_to_dir)
 
     # Downloads and unzips the requested file
@@ -88,8 +89,9 @@ class Sensor_Library:
         self.file_path = path_to_dir + "/" + search_str
 
         # Safe as a file
-        r = requests.get(url, allow_redirects=True)
-        open(self.file_path, "wb").write(r.content)
+        req = requests.get(url, allow_redirects=True)
+        with open(self.file_path, "wb").write(req.content):
+            print("File downloaded")
 
         # If .zip file unzip
         try:
@@ -113,7 +115,7 @@ class Sensor_Library:
 
 
 # Class for Sensor Node:
-class Sensors_node:
+class SensorNode:
 
     # Installation Type Statement (node.type_str)
     MODE_1 = "without ROS2 node"
@@ -133,6 +135,8 @@ class Sensors_node:
         )
         self.type = 1  # Installation Type
         self.dir = ""  # installer dir (Docker Image and ROS2 node)
+        self.list_subfile_1 = []
+        self.list_subfile_2 = []
         self.node_type(self.type)
         self.download_git_lib()
         self.pip_install()
@@ -146,15 +150,14 @@ class Sensors_node:
                 self.type_str = self.MODE_1
                 self.dir = "installer_" + str(self.type)
                 break
-            elif self.type == 2:
+            if self.type == 2:
                 self.type_str = self.MODE_2
                 self.dir = "installer_" + str(self.type)
                 break
-            else:
-                # loop till user enters valid input
-                print("Wrong input, try again")
-                self.type = int(input("Enter 1 or 2: "))
-                continue
+            # loop till user enters valid input
+            print("Wrong input, try again")
+            self.type = int(input("Enter 1 or 2: "))
+            continue
 
     # Change name of node:
     def node_name(self, node_name: str) -> None:
@@ -164,8 +167,9 @@ class Sensors_node:
     def download_git_lib(self) -> None:
         file_path = self.path_to_dir + "/" + self.sensor
         # download and safe as a file
-        r = requests.get(self.url, allow_redirects=True)
-        open(file_path, "wb").write(r.content)
+        req = requests.get(self.url, allow_redirects=True)
+        open(file_path, "wb").write(req.content)
+          
 
         # if *.zip file, unzip
         try:
@@ -184,8 +188,8 @@ class Sensors_node:
             # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
             print("Installing:", self.package_name)
             print("THIS IS A TEST LINE, REMOVE LATER and uncomment subprocess...")
-        except subprocess.CalledProcessError as e:
-            print("Error:", e)
+        except subprocess.CalledProcessError as err:
+            print("Error:", err)
 
     # Find the sensor-main folder:
     def find_folder(self) -> None:
@@ -246,9 +250,7 @@ class Sensors_node:
                 self.code_path = self.file_path + self.EXAMPLES
                 self.file_name = ".py"
             else:
-                print("ERROR: Wrong mode")
-                return None
-
+                print("ERROR: Wrong mode")        
             self.fill_list()
 
         # Creates a list of all *.py files in the directory:
@@ -271,7 +273,7 @@ class Sensors_node:
                 print(i, self.list[i])
             print("")
             print("Enter the number of file:")
-            filenum = input()
+            filenum = int(input())
             return filenum
 
         # Sets and returns the filepath of the selected file:
@@ -375,7 +377,6 @@ def get_subfile_list(search_str: str, search_dir: str, search_type: str) -> list
 def list_menue(search_type: str, search_dir: str, list_subfile: list) -> str:
     if search_type == "examples":
         search_dir = search_dir + "examples/"
-        file_name = ".py"
 
     print("List of files:")
     for i in range(len(list_subfile)):
@@ -406,9 +407,8 @@ def find_file(search_str: str, search_type: str, search_dir: str) -> str:
             file_path = search_dir + f_name
             print(file_path)
             return file_path
-    else:
-        print("ERROR: File not found")
-        return False
+    print("ERROR: File not found")
+    return False
 
 
 # Search and open the Library file:
@@ -420,31 +420,30 @@ def show_sensor_info(search_str: str, dist_packages: str) -> None:
     for f_name in os.listdir(dist_packages):
         if f_name.endswith(file_name):
             # check_file(f_name)
-            print("Found this file", f_name)
-    else:
-        print("ERROR: Sensor Library not found")
-        return False
+            print("Found this file", f_name)   
+    print("ERROR: Sensor Library not found")
+    return False
 
 
 # Prints the sensor implementation notes:
 def check_file(search_str: str) -> None:
-    START_PATTERN = "==="
-    END_PATTERN = "Software"
+    start_pattern = "==="
+    end_pattern = "Software"
 
-    with open(search_str) as file:
+    with open(search_str, encoding="utf-8") as file:
         match = False
         newfile = None
 
         for line in file:
-            if re.search(START_PATTERN, line):
+            if re.search(start_pattern, line):
                 match = True
-                newfile = open("resources/sensor_info.txt", "w")
+                newfile = open("resources/sensor_info.txt", "w", encoding="utf-8")
                 continue
-            elif re.search(END_PATTERN, line):
+            if re.search(end_pattern, line):
                 match = False
                 newfile.close()
                 continue
-            elif match:
+            if match:
                 newfile.write(line)
                 newfile.write("\n")
                 print(line)
@@ -466,12 +465,10 @@ def find_example_code(search_str: str, dist_packages: str) -> str:
             file_path = dist_packages + f_name
             print(file_path)
             return file_path
-    else:
-        print("ERROR: Example Code not found")
-        return False
 
+    print("ERROR: Example Code not found")
+    return False
 
-from distutils.dir_util import copy_tree
 
 # Creates new directory for sensor node:
 def create_new_dir(search_str: str, node_name: str, source_dir: str) -> None:
@@ -505,7 +502,7 @@ def copy_src_2(sensor: str, dir_name: str, file_path: str, file: list) -> None:
             target_list = dir_name + "/src/" + file[i]
             shutil.copyfile(file_path[i], target_list)
             print("Copying:", file_path[i], "to:", target_list)
-    except:
+    except FileNotFoundError:
         print("ERROR: File not found or already exists")
 
 
@@ -513,12 +510,11 @@ def copy_src_2(sensor: str, dir_name: str, file_path: str, file: list) -> None:
 def copy_src(search_str: str, dir_name: str, file_path: str) -> None:
     source_list = file_path
     target_list = dir_name + "/src/" + search_str
-    i = 0
     try:
         shutil.copyfile(source_list, target_list)
         # Path(line).rename(target_list[i])
         print("Copying:", source_list, "to:", target_list)
-    except:
+    except FileNotFoundError:
         print("ERROR: File not found or already exists")
 
 
@@ -545,7 +541,7 @@ def copy_files(node_name: str) -> None:
             # Path(line).rename(target_list[i])
             print("Copying:", line, "to:", target_list[i])
             i += 1
-        except:
+        except FileNotFoundError:
             print("ERROR: File not found or already exists")
 
 
@@ -569,18 +565,18 @@ def copy_dirs(node_name: str) -> None:
             shutil.copytree(line, target_list[i])
             print("Copying:", line, "to:", target_list[i])
             i += 1
-        except:
+        except FileNotFoundError:
             print("ERROR: File not found or already exists")
 
 
 # Finds Placeholder in the file and replaces it with the Variable:
 def replace_string(file_path: str, search_str: str, replace_str: str) -> None:
     try:
-        with open(file_path) as f:
-            s = f.read()
-            s = s.replace(search_str, replace_str)
-        with open(file_path, "w") as f:
-            f.write(s)
+        with open(file_path, encoding="utf-8") as file:
+            source = file.read()
+            source = source.replace(search_str, replace_str)
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(source)
     except:
         print("ERROR: File not found or already exists")
 
@@ -634,7 +630,7 @@ def run_docker_image(node_name: str) -> None:
         subprocess.call(docker_command, shell=True, stdout=output, stderr=output)
     """
     try:
-        with open("/tmp/output.log", "a") as output:
+        with open("/tmp/output.log", "a", encoding="utf-8") as output:
             subprocess.call(docker_command, shell=True, stdout=output, stderr=output)
     except:
         print("Docker not found")

@@ -24,27 +24,25 @@ Implementation Notes
 """
 
 # Imports
-import re
 import sys
-from unittest import case
 import helper
 
 # Adafruit Library Bundle Values:
 # Library Bundle url:
 # GitHub: 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle.git'
-url = "https://github.com/adafruit/Adafruit_CircuitPython_Bundle/archive/refs/heads/main.zip"
-search_str = "Adafruit_CircuitPython_Bundle.zip"
+URL = "https://github.com/adafruit/Adafruit_CircuitPython_Bundle/archive/refs/heads/main.zip"
+SEARCH_STR = "Adafruit_CircuitPython_Bundle.zip"
 
 # local Datastructure:
 # Path for all downloads
-path_to_dir = "resources"
+PATH_TO_DIR = "resources"
 # subdir to all librarys:
-subdir_path = path_to_dir + "/Adafruit_CircuitPython_Bundle-main/libraries/drivers/"
+SUBDIR_PATH = PATH_TO_DIR + "/Adafruit_CircuitPython_Bundle-main/libraries/drivers/"
 
 # Downloads/ Reloads Adafruit Library Bundle:
 # check if file exists, check time of last update, if file is older than 24h, download new file
 # Creates Class for the Library:
-sensors_lib = helper.Sensor_Library(path_to_dir, url, search_str, subdir_path)
+sensors_lib = helper.SensorLibrary(PATH_TO_DIR, URL, SEARCH_STR, SUBDIR_PATH)
 
 # Creates a searchable Sensor Library List:
 # Outputs the list for the user to choose from:
@@ -57,10 +55,9 @@ while True:
         search_str = input("Which sensor do you want to use: ")
         # i.e. search_str = "sgp30"
         if search_str in sensors_lib.list_sensors:
-            sensor_1 = helper.Sensors_node(search_str, path_to_dir)
+            sensor_1 = helper.SensorNode(search_str, PATH_TO_DIR)
             break
-        else:
-            print("Sensor not found in list, please try again")
+        print("Sensor not found in list, please try again")
 
     # not working...
     except ValueError:
@@ -93,25 +90,25 @@ while True:
         helper.open_nano(filepath_1.list_path[int(filenum)])
         continue
 
-    elif answer == "2":
+    if answer == "2":
         # runs the example code
         # user can choose file to run
         filenum = filepath_1.list_menue()
         helper.run_code(filepath_1.list_path[int(filenum)])
         continue
 
-    elif answer == "3":
+    if answer == "3":
         # opens the Sensor Library in nano
         # user can choose file to open
         filenum = filepath_2.list_menue()
         helper.open_nano(filepath_2.list_path[int(filenum)])
         continue
 
-    elif answer == "5":
+    if answer == "5":
         # proceed to next step
         break
 
-    elif answer == "0":
+    if answer == "0":
         # Exit program
         # clean directorys!
         sys.exit("User aborted the Program")
@@ -146,7 +143,7 @@ while True:
         sensor_1.node_name(input())
         continue
 
-    elif answer == "2":
+    if answer == "2":
         # Change the Settings for the Docker Image:
         print(f"Image Type will be: {sensor_1.type_str} ")
         print(" Press '1' to change to 'without ROS 2 Node'")
@@ -154,7 +151,7 @@ while True:
         sensor_1.node_type(int(input()))
         continue
 
-    elif answer == "3":
+    if answer == "3":
         # Change which *.py file will be copied to the Docker Image:
         print(
             f"For Sensor {sensor_1.sensor} following python file will be used: {filepath_1.list}"
@@ -164,17 +161,17 @@ while True:
         filepath_1.set_py(filenum)
         continue
 
-    elif answer == "5":
+    if answer == "5":
         # Creates the subdir and changes values in the Dockerfile:
         helper.create_dockerfile(sensor_1, filepath_1, filepath_2)
         continue
 
-    elif answer == "6":
+    if answer == "6":
         # Runs the Docker Image: ???
         helper.run_docker_image(sensor_1.name)
         continue
 
-    elif answer == "0":
+    if answer == "0":
         # Exit program
         # clean directorys!
         sys.exit("User aborted the Program")
