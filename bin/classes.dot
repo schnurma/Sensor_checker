@@ -1,0 +1,7 @@
+digraph "classes" {
+rankdir=BT
+charset="utf-8"
+"helper.SensorNode.Filepath" [color="black", fontcolor="black", label="{Filepath|EXAMPLES : str\lLIBRARY : str\lcode_path : NoneType\lcode_type : str\lfile_name : str\lfile_path : str\llist : list\llist_path : list\llist_py : int, str\lsensor : str\l|fill_list(): None\linit(mode): None\llist_menue(): str\lset_py(filenum: str): None\l}", shape="record", style="solid"];
+"helper.SensorLibrary" [color="black", fontcolor="black", label="{SensorLibrary|file_path : NoneType\llist_sensors : list\lpath_to_dir : str\lsearch_str : str\lsubdir_path : str\lurl : str\l|check_git_lib(): None\ldownload_git_lib(url: str, search_str: str, path_to_dir: str): None\lget_subdir_list(): list\l}", shape="record", style="solid"];
+"helper.SensorNode" [color="black", fontcolor="black", label="{SensorNode|MODE_1 : str\lMODE_2 : str\ldir : str\lfile_path\lfolder_name : str\llist_subfile_1 : list\llist_subfile_2 : list\lname : str\lpackage_name\lpath_to_dir : str\lsensor : str\ltype : int\ltype_str : str\lurl\l|download_git_lib(): None\lfill_subfile_list(search_dir: str, file_name: str, list_subfile: list): None\lfind_folder(): None\lget_subfile_list(): None\llist_menue(list_subfile: list): str\lnode_name(node_name: str): None\lnode_type(node_type: int): None\lpip_install(): None\l}", shape="record", style="solid"];
+}

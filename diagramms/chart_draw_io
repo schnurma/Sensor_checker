@@ -1,0 +1,13 @@
+<mxfile host="65bd71144e">
+    <diagram id="-OiUgKnfGoDUHXu5_l07" name="Page-1">
+        <mxGraphModel dx="316" dy="205" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="3" value="&#10;            flowchart TB&#10;            A([Start]) --&gt; B[Load Constants] &#10;            B --&gt; C_0{ Adafruit Sensor Library older then 24h ?}&#10;            C_0 --&gt;|yes| C_1[ Download Adafruit Sensor Library] &#10;            C_0 --&gt;|no| D[ Output Sensorlist]&#10;            C_1 --&gt; D&#10;            D --&gt; E[ Ask User which Sensor]&#10;            E --&gt; F{ Sensor available?}&#10;            F --&gt;|no| E&#10;            F --&gt;|yes| G[Safe Sensor.name, download &amp; install Library]&#10;&#10;            G --&gt; H[Show User, Sensor Option Menue]&#10;            H --&gt; H11{Which Selection?}&#10;            H11 --&gt; H1[Open example code?]&#10;            H11 --&gt; H2[Run example code?]&#10;            H11 --&gt; H3[Open Library code?]&#10;            H11 --&gt; H4[Continue Process?]&#10;            H11 --&gt; H5[Exit Program?] --&gt; XX([Program End])&#10;            H1 --&gt; H&#10;            H2 --&gt; H&#10;            H3 --&gt; H&#10;            H4 --&gt; H&#10;            &#10;            H4 --&gt;I[Show User, Docker/ROS2 Opton Menue]&#10;            I --&gt; I1[Change Name Node?]&#10;            I --&gt; I2[Change Settings, with/without ROS2?]&#10;            I --&gt; I3[Choose Python Code for Node?]&#10;            I --&gt; I4[Create Dockerfile?]&#10;            I --&gt; I5[Create Dockerimage?]&#10;            I --&gt; I6[Exit Program?] --&gt; XY([Program End])&#10;            I1 --&gt;I11[Change Settings]&#10;            I2 --&gt;I11&#10;            I3 --&gt;I11&#10;            I11 --&gt;I&#10;            I4 --&gt;J1[Creating Directory, copy Files, editing Dockerimage File] --&gt;I&#10;            I5 --&gt;J2[Starting Docker build process] --&gt; XY&#10;            " style="shadow=0;dashed=0;align=left;strokeWidth=1;shape=mxgraph.mermaid.abstract.mermaid;labelBackgroundColor=#ffffff;noLabel=1;theme=default;fontStyle=0;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;sketch=0;" vertex="1" parent="1">
+                    <mxGeometry x="120" y="140" width="360" height="360" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

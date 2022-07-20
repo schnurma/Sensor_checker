@@ -36,9 +36,6 @@ import subprocess
 import requests
 
 
-
-# ??? from msilib.schema import Class
-
 def exit_program() -> None:
     """Exit programm, clear folders (resources, )"""
     # TODO: clear resources folder
@@ -86,8 +83,8 @@ class SensorLibrary:
 
         # Safe as a file
         req = requests.get(url, allow_redirects=True)
-        with open(self.file_path, "wb").write(req.content):
-            print("File downloaded")
+        open(self.file_path, "wb").write(req.content)
+        
 
         # If .zip file unzip
         try:
