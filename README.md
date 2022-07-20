@@ -11,8 +11,6 @@ libs "adafruit_*.py" vom Sensor direkt im Ordner
 "lib" und "adafruit_bundle"
 code_dump.txt und classes_objects.py
 
-
-
 User should input Sensor ID to search in Adafruit Sensor Library
 Searching in Lib for Sensor ID, downloads the file
 Prints out Implementation Notes and Connection Type (I2C, SPI, etc...)
@@ -24,10 +22,10 @@ ERROR HANDLING !!!???!!!
 
 Meine Idee:
 
-x Liste von der Adafruit GitHub Library erstellen,
-x als Liste dem User zur Verfügung stellen, im Terminal.
-x Nach Auswahl und Verifizierung, laden der vollständigen Lib des Sensors (im LibPackage Bundle sind nur *.mpy Files... )
-nö Ausgabe der Implemenation Notes mit Link zu Adafruit Sensor Seite
+x : Liste von der Adafruit GitHub Library erstellen,
+x :als Liste dem User zur Verfügung stellen, im Terminal.
+x :Nach Auswahl und Verifizierung, laden der vollständigen Lib des Sensors (im LibPackage Bundle sind nur *.mpy Files... )
+nicht nötig: Ausgabe der Implemenation Notes mit Link zu Adafruit Sensor Seite
 x Example Code in Nano öffnen
 -> User muss Pin Belegung Protokoll entsprechend Sensor anpassen testen
 -> kann Example Code starten
