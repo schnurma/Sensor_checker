@@ -34,6 +34,7 @@ import datetime
 import zipfile
 import subprocess
 import requests
+import typing
 
 
 def exit_program() -> None:
@@ -41,7 +42,6 @@ def exit_program() -> None:
     # TODO: clear resources folder
     # TODO: ???
     sys.exit("User aborted the Program")
-
 
 class SensorLibrary:
     """Class for the Adafruit Library:"""
@@ -105,6 +105,7 @@ class SensorLibrary:
                 # print(path)
                 self.list_sensors.append(path.name)
         return self.list_sensors
+
 
 
 # Class for Sensor Node:
